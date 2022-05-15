@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('passenger', {
+    await queryInterface.createTable('userforum', {
       id: {
         type: Sequelize.Datatypes.INTEGER,
         primaryKey: true,
