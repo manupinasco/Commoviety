@@ -1,16 +1,16 @@
 'use strict';
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('user', {
+    await queryInterface.createTable('users', {
       id: {
-        type: Sequelize.Datatypes.INTEGER,
+        type: Sequelize.DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
 
       nickname: {
 
-        type : Sequelize.Datatypes.STRING(20),
+        type : Sequelize.DataTypes.STRING(60),
 
         allowNull: false
       },
@@ -18,20 +18,20 @@ module.exports = {
 
       firstName: {
 
-        type : Sequelize.Datatypes.STRING(50),
+        type : Sequelize.DataTypes.STRING(60),
 
         allowNull: true
       },
 
       lastName: {
 
-        type : Sequelize.Datatypes.STRING(50),
+        type : Sequelize.DataTypes.STRING(60),
 
         allowNull: true
       },
 
       mail: {
-        type : Sequelize.Datatypes.STRING(20),
+        type : Sequelize.DataTypes.STRING(60),
 
         allowNull: false
 
@@ -39,37 +39,37 @@ module.exports = {
 
       age: {
 
-        type : Sequelize.Datatypes.INTEGER,
+        type : Sequelize.DataTypes.INTEGER,
 
         allowNull: true
       },
 
       password: {
 
-        type : Sequelize.Datatypes.STRING(20),
+        type : Sequelize.DataTypes.STRING(60),
 
         allowNull: false
       },
 
 
       createdAt: {
-        type: Sequelize.Datatypes.DATE,
+        type: Sequelize.DataTypes.DATE,
 
-        defaultValue: Sequelize.Datatypes.NOW
+        defaultValue: Sequelize.DataTypes.NOW
 
       },
 
       updatedAt: {
 
-        type: Sequelize.Datatypes.DATE,
+        type: Sequelize.DataTypes.DATE,
 
-        defaultValue: Sequelize.Datatypes.NOW
+        defaultValue: Sequelize.DataTypes.NOW
       },
 
 
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Person');
+    return queryInterface.dropTable('User');
   }
 };
