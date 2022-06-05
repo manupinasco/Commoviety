@@ -4,6 +4,9 @@ const app = express();
 
 const {User, Forum} = require('./src/db/models')
 
+const {Score} = require('./src/db/models/') 
+const {Movie} = require('./src/db/models')
+
 
 app.listen(4444)
 
@@ -74,3 +77,34 @@ app.post('/usersForums/:idUser/:idForum', async function(req, res) {
 
 
 
+app.get('/scores', async function (req, res) {
+    let data = await Score.findAll() //viene del Model de sequelize
+    
+    
+    res.send(data)
+})
+
+app.get('/scores/:id', async function (req, res) {
+    let data = await Score.findByPk(req.params.id)
+    
+    
+    res.send(data)
+})
+
+app.get('/movies', async function (req, res){
+    data = await Movie.findAll()
+    res.send(data)
+})
+
+app.get('/movies/:id', async function (req, res){
+    data = await Movie.findByPk(req.params.id)
+    res.send(data)
+})
+
+ app.get('/moviesCreate', async function (req, res){
+    Movie.create({
+        name : 'spiderman',
+        description: 'lorem ipsum',
+        platform: 'netflix'
+    })
+}) 
