@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const {Score} = require('./src/db/models/') //por defecto busca index.js. En este caso devuelve el objeto db{} con todos los modelos
+const {Movie} = require('./src/db/models')
 
 app.get('/', function (req, res){
     res.send('hello')
@@ -20,12 +21,6 @@ app.get('/scores/:id', async function (req, res) {
     res.send(data)
 })
 
-
-
-
-app.listen(6001)
-console.log('Listening at port 6001')
-const {Movie} = require('./src/db/models')
 app.listen(6001)
 
 app.get('/', function (req, res){
