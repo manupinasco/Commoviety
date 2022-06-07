@@ -7,10 +7,6 @@ const {User, Forum} = require('./src/db/models')
 const {Score} = require('./src/db/models/') 
 const {Movie} = require('./src/db/models')
 
-<<<<<<< HEAD
-app.get('/', function (req, res){
-    res.send('hello')
-=======
 
 app.listen(4444)
 
@@ -30,7 +26,6 @@ app.get('/users', async function(req, res) {
     
     
 
->>>>>>> dev
 })
 
 app.get('/forums', async function(req, res) {
