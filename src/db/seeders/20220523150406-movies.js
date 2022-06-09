@@ -1,15 +1,5 @@
 'use strict';
-const {randMovie, randPhrase} = require('@ngneat/falso')
-function randomPlatform() {
-  let num = Math.floor((Math.random() * (3 - 1 + 1)) + 1);
-  if(num == 1){
-    return 'netflix'
-  } else if (num == 2){
-    return 'amazon'
-  } else {
-    return 'HBO'
-  }
-}
+const {randMovie, randPhrase, rand} = require('@ngneat/falso')
 
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -18,7 +8,7 @@ module.exports = {
       movies.push({
         name: randMovie(),
         description: randPhrase(),
-        platform: randomPlatform(),
+        platform: rand([netflix, amazon, HBO]),
         createdAt: new Date,
         updatedAt: new Date,
       })
