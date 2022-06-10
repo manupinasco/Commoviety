@@ -8,7 +8,7 @@ module.exports = {
       movies.push({
         name: randMovie(),
         description: randPhrase(),
-        platform: rand([netflix, amazon, HBO]),
+        platform: rand(['netflix', 'amazon', 'HBO']),
         createdAt: new Date,
         updatedAt: new Date,
       })
