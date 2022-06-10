@@ -54,21 +54,36 @@ app.get('/users/:id', async function (req, res) {
     res.send(data)
 })
 
-app.post('/usersForums/:idUser/:idForum', async function(req, res) {
+app.post('/usersForums', async function(req, res) {
+    
+    
+    
     try {
-        let user = await User.findByPk(req.params.idUser)
+        let user = await User.findByPk(req.body.idUser)
+        let forum = await Forum.findByPk(req.body.idForum)
 
-        if(user.getForums().length < 25) {
-            console.warn("User " + req.params.idUser + " is already participating in 25 forums, which is the limit")
+        if(user.hasForum(forum)) {
+            return res.status(422).json({message: 'USERFORUM_EXISTS'})
         }
+
         else {
-            let forum = await Forum.findByPk(req.params.idForum)
-            forum.addUser(user)
+            if(user.getForums().length < 25) {
+                console.warn("User " + req.body.idUser + " is already participating in 25 forums, which is the limit")
+            }
+            else {
+                
+                forum.addUser(user)
 
+                res.status(201).json({})
+    
+            }
         }
+
+        
     }
     catch(error) {
         console.log(error)
+        res.status(422).json(error)
     }
 })
 
