@@ -3,39 +3,49 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Forum extends Model {
+  class Movie extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Forum.belongsToMany(models.User, {through: 'forumusers'})
+      // define association here
     }
   }
-  Forum.init({
+  Movie.init({
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
 
+    name: {
+      type : DataTypes.STRING(50),
+      allowNull: false
+    },
+
+    description: {
+      type : DataTypes.STRING(300),
+      allowNull: false
+    },
+
+    platform: {
+      type: DataTypes.ENUM('netflix','amazon','HBO'),
+    },
+
     createdAt: {
       type: DataTypes.DATE,
-
       defaultValue: DataTypes.NOW
-
     },
 
     updatedAt: {
-
       type: DataTypes.DATE,
-
       defaultValue: DataTypes.NOW
     }
   }, {
     sequelize,
-    modelName: 'Forum',
+    modelName: 'Movie',
   });
-  return Forum;
+  return Movie;
 };
