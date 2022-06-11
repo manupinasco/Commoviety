@@ -5,6 +5,7 @@ const app = express();
 const { User, Forum } = require('./src/db/models')
 const { Score } = require('./src/db/models/')
 const { Movie } = require('./src/db/models');
+const { Message } = require('./src/db/models');
 
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
@@ -144,4 +145,26 @@ app.delete('/movies', async function (req, res){
             name: req.body.name
           }
     })
+}) 
+
+/*            AGREGAR MENSAJE A FORO            */
+
+app.post('/messageForum', async function (req, res){
+    try {
+        let message = await Message.findByPk(req.body.idMessage)
+        let forum = await Forum.findByPk(req.body.idForum)
+        let messageUser = await User.findByPk(message.getDataValue('userId'))
+        
+        // Si el usuario del mensaje tiene 5 denuncias, no se podra agregar el mensaje
+        if(messageUser.getDataValue('reports') >= 5){
+            return res.status(422).json({message: 'BANNED_USER'})
+        }else{
+            forum.addMessage(message)
+            res.status(201).json({})
+        }
+    }
+    catch(error){
+        console.log(error)
+        res.status(422).json(error)
+    }
 }) 
