@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-
       User.belongsToMany(models.Forum, {through: 'forumusers'})
+      User.hasMany(models.Message)
     }
   }
   User.init({
