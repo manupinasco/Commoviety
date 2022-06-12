@@ -65,7 +65,7 @@ app.post('/usersForums', async function (req, res) {
     try {
         let user = await User.findByPk(req.body.idUser)
         let forum = await Forum.findByPk(req.body.idForum)
-
+        
         if (user.hasForum(forum)) {
             return res.status(422).json({ message: 'USERFORUM_EXISTS' })
         }
@@ -154,13 +154,18 @@ app.post('/messageForum', async function (req, res) {
         let message = await Message.findByPk(req.body.idMessage)
         let forum = await Forum.findByPk(req.body.idForum)
         let messageUser = await User.findByPk(message.getDataValue('userId'))
-        console.log(messageUser.getDataValue('reports'))
-        // Si el usuario del mensaje tiene 5 denuncias, no se podra agregar el mensaje
-        if (messageUser.getDataValue('reports') >= 5) {
-            return res.status(422).json({ message: 'BANNED_USER' })
+        let userForumAssoExist = await messageUser.hasForum(forum)
+        // Si el usuario del mensaje no esta asociado al foro, no se podra agregar el mensaje
+        if (userForumAssoExist) {
+            // Si el usuario del mensaje tiene 5 denuncias, no se podra agregar el mensaje
+            if (messageUser.getDataValue('reports') >= 5) {
+                return res.status(422).json({ message: 'BANNED_USER' })
+            } else {
+                forum.addMessage(message)
+                res.status(201).json({})
+            }
         } else {
-            forum.addMessage(message)
-            res.status(201).json({})
+            return res.status(422).json({ message: 'USERFORUM_NO_EXISTS' })
         }
     }
     catch (error) {
