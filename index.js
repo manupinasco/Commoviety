@@ -288,7 +288,6 @@ app.delete('/message', async function (req, res) {
 app.put('/messageReport', async function (req, res) {
     try {
         let message = await Message.findByPk(req.body.idMessage)
-        console.log(message == null)
         if(message != null){
             if(message.getDataValue('reports') < 3){
                 message.update({
@@ -299,7 +298,6 @@ app.put('/messageReport', async function (req, res) {
                 return res.status(422).json({ message: 'MANY_TIMES_REPORTED_MESSAGE' })
             }
         }else{
-            console.log("PASE POR ACA")
             return res.status(422).json({ message: 'MESSAGE_DOESNT_EXIST' })
         }
     }
@@ -410,4 +408,27 @@ app.post('/users', async function (req, res) {
     User.create({
         nickname: req.body.name,
     })
+})
+
+/*            DENUNCIAR USUARIO            */
+app.put('/userReport', async function (req, res) {
+    try {
+        let user = await User.findByPk(req.body.idUser)
+        if(user != null){
+            if(user.getDataValue('reports') < 5){
+                user.update({
+                    reports: user.getDataValue('reports') + 1,
+                })
+                res.status(201).json({})
+            }else{
+                return res.status(422).json({ message: 'MANY_TIMES_REPORTED_USER' })
+            }
+        }else{
+            return res.status(422).json({ message: 'USER_DOESNT_EXIST' })
+        }
+    }
+    catch (error) {
+        console.log(error)
+        res.status(422).json(error)
+    }
 })
