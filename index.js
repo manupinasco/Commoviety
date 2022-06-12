@@ -361,5 +361,28 @@ app.delete('/user', async function (req, res){
         res.status(422).json(error)
     }
 })
-    
 
+app.get('/users', async function(req, res) {
+    if (req.query.name != undefined) {
+        if (req.query.name.length >= 3) {
+            data = await User.findAll({
+                where: {
+                    nickname: {
+                        [Op.like]: req.query.name + '%'
+                    }
+                }
+            })
+        } else {
+            data = []
+        }
+    } else {
+        data = await User.findAll();
+    }
+    res.send(data)
+})
+    
+app.post('/users', async function (req, res) {
+    User.create({
+        nickname: req.body.name,
+    })
+})
