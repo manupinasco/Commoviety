@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      List.belongsToMany(models.Movie, {through: 'listsmovies'})
+      List.belongsToMany(models.Movie, {through: 'listmovies'})
       List.belongsTo(models.User)
     }
   }
@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
 
-    idUser: {
+    UserId: {
       type: DataTypes.INTEGER
     },
 
