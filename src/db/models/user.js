@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
 
       User.belongsToMany(models.Forum, {through: 'forumusers'})
       User.hasMany(models.Score)
+      User.hasMany(models.List)
     }
   }
   User.init({
