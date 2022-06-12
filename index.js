@@ -5,7 +5,7 @@ const app = express();
 const {User, Forum} = require('./src/db/models')
 
 const {Score} = require('./src/db/models/') 
-const {Movie} = require('./src/db/models')
+const {Movie, List} = require('./src/db/models');
 
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
@@ -73,7 +73,7 @@ app.post('/usersForums', async function(req, res) {
 
         else {
             if(user.getForums().length < 25) {
-                console.warn("User " + req.body.idUser + " is already participating in 25 forums, which is the limit")
+               return res.status(403).json({message: 'LIMIT_AMOUNT_FORUMS'})
             }
             else {
                 
@@ -95,7 +95,7 @@ app.post('/usersForums', async function(req, res) {
 
 
 app.get('/scores', async function (req, res) {
-    let data = await Score.findAll() //viene del Model de sequelize
+    let data = await Score.findAll()
     
     
     res.send(data)
@@ -125,3 +125,74 @@ app.get('/movies/:id', async function (req, res){
         platform: 'netflix'
     })
 }) 
+
+app.post('/scoreUser', async function (req, res) {
+    try {
+        let scoreObject = await Score.findAll({where: {
+            MovieId: req.body.idMovie,
+            UserId: req.body.idUser
+        }})
+        if(scoreObject.length > 0) {
+            await Score.update({value: req.body.value}, {where: {MovieId: req.body.idMovie,
+                UserId: req.body.idUser}})
+            res.status(201).json({})
+            
+        }
+
+        else {
+                const scoreInstance = await Score.build( {
+                    value: req.body.value
+                })
+
+                let user = await User.findByPk(req.body.idUser)
+
+                await scoreInstance.save()
+
+                let movie = await Movie.findByPk(req.body.idMovie)
+
+
+                scoreInstance.setUser(user)
+
+                
+
+                scoreInstance.setMovie(movie)
+
+                let list = await List.findOne({where: {
+                    UserId: req.body.idUser,
+                    name: 'MoviesWatched'
+                }})
+
+                if(list != null) {
+                    let myList = await List.findByPk(list.id)
+                    console.log(list.id)
+                    list.addMovie(movie)
+                }
+                else {
+                    const listInstance = await List.build( {
+                        name: 'MoviesWatched'
+                    })
+                    await listInstance.save()
+                    user.addList(listInstance)
+                    listInstance.addMovie(movie)
+                }
+
+                
+                res.status(201).json({})
+
+
+                
+
+
+
+                
+        }
+
+        
+
+        
+    }
+    catch(error) {
+        console.log(error)
+        res.status(422).json(error)
+    }
+})
