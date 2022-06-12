@@ -183,19 +183,6 @@ app.post('/scoreUser', async function (req, res) {
                     name: 'MoviesWatched'
                 }})
 
-                if(list != null) {
-                    list.addMovie(movie)
-                }
-                else {
-                    const listInstance = await List.build( {
-                        name: 'MoviesWatched'
-                    })
-                    await listInstance.save()
-                    user.addList(listInstance)
-                    listInstance.addMovie(movie)
-                }
-            })
-
             if (list != null) {
                 let myList = await List.findByPk(list.id)
                 console.log(list.id)
@@ -213,17 +200,7 @@ app.post('/scoreUser', async function (req, res) {
 
             res.status(201).json({})
 
-
-
-
-
-
-
         }
-
-
-
-
     }
     catch(error) {
         res.status(422).json(error)
