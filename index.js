@@ -8,7 +8,7 @@ const { Movie } = require('./src/db/models');
 const { Message } = require('./src/db/models');
 
 app.use(express.json())
-app.use(express.urlencoded({extended: false}))
+app.use(express.urlencoded({ extended: false }))
 app.listen(4444)
 
 
@@ -58,32 +58,32 @@ app.get('/users/:id', async function (req, res) {
     res.send(data)
 })
 
-app.post('/usersForums', async function(req, res) {
-    
-    
-    
+app.post('/usersForums', async function (req, res) {
+
+
+
     try {
         let user = await User.findByPk(req.body.idUser)
         let forum = await Forum.findByPk(req.body.idForum)
 
-        if(user.hasForum(forum)) {
-            return res.status(422).json({message: 'USERFORUM_EXISTS'})
+        if (user.hasForum(forum)) {
+            return res.status(422).json({ message: 'USERFORUM_EXISTS' })
         }
 
         else {
-            if(user.getForums().length < 25) {
+            if (user.getForums().length < 25) {
                 console.warn("User " + req.body.idUser + " is already participating in 25 forums, which is the limit")
             }
             else {
-                
+
                 forum.addUser(user)
 
                 res.status(201).json({})
-    
+
             }
         }
 
-        
+
     }
     catch (error) {
         console.log(error)
@@ -108,10 +108,10 @@ app.get('/scores/:id', async function (req, res) {
 })
 
 /*            BUSQUEDA DE PELICULA POR NOMBRE            */
-app.get('/movies', async function (req, res) { 
+app.get('/movies', async function (req, res) {
     if (req.query.name != undefined) {
         //Se revisa si al menos hay tres caracteres cuando se busca por nombre 
-        if(req.query.name.length >= 3){ 
+        if (req.query.name.length >= 3) {
             data = await Movie.findAll({
                 where: {
                     //Filtra si algun nombre de pelicula empieza con el nombre enviado o es igual a este
@@ -120,9 +120,9 @@ app.get('/movies', async function (req, res) {
                     }
                 }
             })
-        }else{
+        } else {
             //Si el nombre enviado tiene menos de 3 caracteres, aunque alguna pelicula empieze por este, no se decolvera
-            data = []  
+            data = []
         }
     } else {
         //Si no se busca por nombre, aparecen todas las peliculas
@@ -131,39 +131,56 @@ app.get('/movies', async function (req, res) {
     res.send(data)
 })
 
-app.post('/movies', async function (req, res){
+app.post('/movies', async function (req, res) {
     Movie.create({
-        name : req.body.name,
+        name: req.body.name,
         description: 'lorem ipsum',
         platform: 'netflix'
     })
-}) 
+})
 
-app.delete('/movies', async function (req, res){
+app.delete('/movies', async function (req, res) {
     Movie.destroy({
         where: {
             name: req.body.name
-          }
+        }
     })
-}) 
+})
 
 /*            AGREGAR MENSAJE A FORO            */
 
-app.post('/messageForum', async function (req, res){
+app.post('/messageForum', async function (req, res) {
     try {
         let message = await Message.findByPk(req.body.idMessage)
         let forum = await Forum.findByPk(req.body.idForum)
         let messageUser = await User.findByPk(message.getDataValue('userId'))
-        
+        console.log(messageUser.getDataValue('reports'))
         // Si el usuario del mensaje tiene 5 denuncias, no se podra agregar el mensaje
-        if(messageUser.getDataValue('reports') >= 5){
-            return res.status(422).json({message: 'BANNED_USER'})
-        }else{
+        if (messageUser.getDataValue('reports') >= 5) {
+            return res.status(422).json({ message: 'BANNED_USER' })
+        } else {
             forum.addMessage(message)
             res.status(201).json({})
         }
     }
-    catch(error){
+    catch (error) {
+        console.log(error)
+        res.status(422).json(error)
+    }
+})
+
+
+app.put('/banUser', async function (req, res) {
+    try {
+        let message = await Message.findByPk(req.body.idMessage)
+        let messageUser = await User.findByPk(message.getDataValue('userId'))
+        //Le asigno al usuario del mensaje 5 denuncias por lo que queda baneado para mandar mensajes
+        messageUser.update({
+            reports: 5,
+        })
+        res.status(201).json({})
+    }
+    catch (error) {
         console.log(error)
         res.status(422).json(error)
     }
