@@ -288,7 +288,6 @@ app.delete('/message', async function (req, res) {
 app.put('/messageReport', async function (req, res) {
     try {
         let message = await Message.findByPk(req.body.idMessage)
-        console.log(message == null)
         if(message != null){
             if(message.getDataValue('reports') < 3){
                 message.update({
@@ -299,7 +298,6 @@ app.put('/messageReport', async function (req, res) {
                 return res.status(422).json({ message: 'MANY_TIMES_REPORTED_MESSAGE' })
             }
         }else{
-            console.log("PASE POR ACA")
             return res.status(422).json({ message: 'MESSAGE_DOESNT_EXIST' })
         }
     }
