@@ -310,9 +310,31 @@ app.post('/listMovie', async function (req, res) {
         else {
             return res.status(422).json({message: 'LISTMOVIE_ALREADY_EXISTS'})
         }
+    }
+        catch(error) {
+            res.status(422).json(error)
+        }
+    }) 
+
+app.delete('/user', async function (req, res){
+    try {
+        let user = await User.findByPk(req.body.idUser)
+        if(user != null) {
+            User.destroy({
+                where: {
+                    id: req.body.idUser
+                  }
+            })
+            res.status(201).json({})
+        }
+        else {
+            return res.status(422).json({message: 'USER_DOESNT_EXIST'})
+        }
         
     }
     catch(error) {
         res.status(422).json(error)
     }
 })
+    
+
