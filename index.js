@@ -409,3 +409,26 @@ app.post('/users', async function (req, res) {
         nickname: req.body.name,
     })
 })
+
+/*            DENUNCIAR USUARIO            */
+app.put('/userReport', async function (req, res) {
+    try {
+        let user = await User.findByPk(req.body.idUser)
+        if(user != null){
+            if(user.getDataValue('reports') < 5){
+                user.update({
+                    reports: user.getDataValue('reports') + 1,
+                })
+                res.status(201).json({})
+            }else{
+                return res.status(422).json({ message: 'MANY_TIMES_REPORTED_USER' })
+            }
+        }else{
+            return res.status(422).json({ message: 'USER_DOESNT_EXIST' })
+        }
+    }
+    catch (error) {
+        console.log(error)
+        res.status(422).json(error)
+    }
+})
