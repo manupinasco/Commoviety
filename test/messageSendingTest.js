@@ -4,16 +4,22 @@ const chaiFetch = require('chai-fetch');
 chai.use(chaiFetch);
 const {assert} = chai;
 
-async function banUser() {
-    await axios({
-        method: 'put',
-        url: 'http://localhost:4444/banUser',
-        data: { idMessage: 3 }
-    })
-}
 
 describe('Message sending in forum', () => {
-
+    before((done) => {
+        axios({
+            method: 'put',
+            url: 'http://localhost:4444/banUser',
+            data: { idMessage: 3 }
+        })
+        .then(()=>{
+            done()
+        })
+        .catch(()=>{
+            done()
+        })
+    })
+    
     it("Returns 201 if the message is sent to the forum correctly", (done) => {
         axios({
             method: 'post',
@@ -31,7 +37,6 @@ describe('Message sending in forum', () => {
         })
     })
     it("Returns 422 if the message hasn't been sent because the user has more than 4 reports", (done) => {
-        banUser()
         axios({
             method: 'post',
             url: 'http://localhost:4444/messageForum',
