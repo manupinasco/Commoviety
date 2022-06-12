@@ -13,6 +13,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       User.belongsToMany(models.Forum, {through: 'forumusers'})
       User.hasMany(models.Message)
+      User.hasMany(models.Score)
+      User.hasMany(models.List)
     }
   }
   User.init({

@@ -11,10 +11,33 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Score.belongsTo(models.Movie)
+      Score.belongsTo(models.User)
     }
   }
   Score.init({
-    value: DataTypes.FLOAT
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    value: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
+    },
+   MovieId: {
+      type: DataTypes.INTEGER
+    },
+    UserId: {
+      type: DataTypes.INTEGER
+    }
   }, {
     sequelize,
     modelName: 'Score',
