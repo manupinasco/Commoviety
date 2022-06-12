@@ -259,6 +259,31 @@ app.put('/banUser', async function (req, res) {
     }
 })
 
+/*            ELIMINAR MENSAJE            */
+app.delete('/message', async function (req, res) {
+    try {
+        let message = await Message.findByPk(req.body.idMessage)
+        let messageUser = await User.findByPk(message.getDataValue('userId'))
+        if(message.getDataValue('reports') >= 3){
+            if(messageUser.getDataValue('reports') >= 5){
+                Message.destroy({
+                    where: {
+                        id: req.body.idMessage
+                    }
+                }) 
+            }else{
+                return res.status(422).json({ message: 'NOT_BANNED_USER' })
+            }
+        }else{
+            return res.status(422).json({ message: 'FEW_REPORTS_IN_MESSAGE' })
+        }
+    }
+    catch (error) {
+        console.log(error)
+        res.status(422).json(error)
+    }
+})
+
 app.post('/list', async function (req, res) {
     try {
         if (req.body.nameList != '') {
