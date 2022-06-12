@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-
       User.belongsToMany(models.Forum, {through: 'forumusers'})
+      User.hasMany(models.Message)
       User.hasMany(models.Score)
       User.hasMany(models.List)
     }
@@ -68,6 +68,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
 
+    reports: {
+      type : DataTypes.INTEGER,
+
+      allowNull: false
+    },
 
     createdAt: {
       type: DataTypes.DATE,
