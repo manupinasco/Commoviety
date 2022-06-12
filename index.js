@@ -216,3 +216,41 @@ app.delete('/movies', async function (req, res){
           }
     })
 }) 
+
+app.post('/list', async function(req, res) {
+    try {
+        if(req.body.nameList != '') {
+            if(req.body.nameList != 'MoviesWatched') {
+                let list = await List.findOne({where: {
+                    UserId: req.body.idUser,
+                    name: req.body.nameList
+                }})
+
+                if(list == null) {
+                    let listInstance = await List.build( {
+                        name: req.body.nameList
+                    })
+                    await listInstance.save()
+                    let user = await User.findByPk(req.body.idUser)
+                    user.addList(listInstance)
+                    res.status(201).json({})
+                }
+                else {
+                    return res.status(422).json({message: 'NAME_ALREADY_IN_USE'})
+                }
+                
+            }
+            else {
+                return res.status(422).json({message: 'NAME_NOT_ALLOWED'})
+            }
+        }
+        else {
+            return res.status(422).json({message: 'EMPTY_NAME'})
+        }
+    }
+    catch(error) {
+        console.log(error)
+        res.status(422).json(error)
+    }
+    
+})
