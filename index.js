@@ -86,7 +86,6 @@ app.post('/usersForums', async function(req, res) {
         
     }
     catch (error) {
-        console.log(error)
         res.status(422).json(error)
     }
 })
@@ -176,8 +175,6 @@ app.post('/scoreUser', async function (req, res) {
                 }})
 
                 if(list != null) {
-                    let myList = await List.findByPk(list.id)
-                    console.log(list.id)
                     list.addMovie(movie)
                 }
                 else {
@@ -205,7 +202,6 @@ app.post('/scoreUser', async function (req, res) {
         
     }
     catch(error) {
-        console.log(error)
         res.status(422).json(error)
     }
 })
@@ -249,8 +245,26 @@ app.post('/list', async function(req, res) {
         }
     }
     catch(error) {
-        console.log(error)
         res.status(422).json(error)
     }
     
+})
+
+app.post('/listMovie', async function (req, res) {
+    try {
+        let list = await List.findByPk(req.body.idList)
+        let movie = await Movie.findByPk(req.body.idMovie)
+        let associationExists = await list.hasMovie(movie)
+        if( !associationExists) {
+            list.addMovie(movie)
+            res.status(201).json({})
+        }
+        else {
+            return res.status(422).json({message: 'LISTMOVIE_ALREADY_EXISTS'})
+        }
+        
+    }
+    catch(error) {
+        res.status(422).json(error)
+    }
 })
