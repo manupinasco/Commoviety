@@ -88,7 +88,6 @@ app.post('/usersForums', async function (req, res) {
 
     }
     catch (error) {
-        console.log(error)
         res.status(422).json(error)
     }
 })
@@ -182,6 +181,18 @@ app.post('/scoreUser', async function (req, res) {
                 where: {
                     UserId: req.body.idUser,
                     name: 'MoviesWatched'
+                }})
+
+                if(list != null) {
+                    list.addMovie(movie)
+                }
+                else {
+                    const listInstance = await List.build( {
+                        name: 'MoviesWatched'
+                    })
+                    await listInstance.save()
+                    user.addList(listInstance)
+                    listInstance.addMovie(movie)
                 }
             })
 
@@ -214,8 +225,7 @@ app.post('/scoreUser', async function (req, res) {
 
 
     }
-    catch (error) {
-        console.log(error)
+    catch(error) {
         res.status(422).json(error)
     }
 })
@@ -305,8 +315,27 @@ app.post('/list', async function (req, res) {
             return res.status(422).json({ message: 'EMPTY_NAME' })
         }
     }
-    catch (error) {
-        console.log(error)
+    catch(error) {
+        res.status(422).json(error)
+    }
+    
+})
+
+app.post('/listMovie', async function (req, res) {
+    try {
+        let list = await List.findByPk(req.body.idList)
+        let movie = await Movie.findByPk(req.body.idMovie)
+        let associationExists = await list.hasMovie(movie)
+        if( !associationExists) {
+            list.addMovie(movie)
+            res.status(201).json({})
+        }
+        else {
+            return res.status(422).json({message: 'LISTMOVIE_ALREADY_EXISTS'})
+        }
+        
+    }
+    catch(error) {
         res.status(422).json(error)
     }
 })
