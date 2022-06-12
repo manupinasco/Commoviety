@@ -2,16 +2,10 @@ const express = require('express');
 const { Op } = require("sequelize");
 const app = express();
 
-<<<<<<< HEAD
 const {User, Forum} = require('./src/db/models')
 
 const {Score} = require('./src/db/models/') 
 const {Movie, List} = require('./src/db/models');
-=======
-const { User, Forum } = require('./src/db/models')
-const { Score } = require('./src/db/models/')
-const { Movie } = require('./src/db/models');
->>>>>>> f635937612666fa4033fc502a4a5bd80adc5e791
 
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
@@ -100,15 +94,9 @@ app.post('/usersForums', async function(req, res) {
 
 
 app.get('/scores', async function (req, res) {
-<<<<<<< HEAD
     let data = await Score.findAll()
     
     
-=======
-    let data = await Score.findAll() //viene del Model de sequelize
-
-
->>>>>>> f635937612666fa4033fc502a4a5bd80adc5e791
     res.send(data)
 })
 
