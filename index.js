@@ -92,6 +92,26 @@ app.post('/usersForums', async function (req, res) {
     }
 })
 
+/*                   DESASOCIAR USUARIOS                    */
+app.post('/usersForumsDissociation', async function (req, res) {
+    try {
+        let user = await User.findByPk(req.body.idUser)
+        let forum = await Forum.findByPk(req.body.idForum)
+        let userForumAssoExist = await user.hasForum(forum)
+        console.log(userForumAssoExist)
+        //Se revisa si el usuario y el foro estan asociados
+        if (userForumAssoExist) {
+            forum.removeUser(user)
+            res.status(201).json({})
+        }
+        else {
+            return res.status(422).json({ message: 'UNASSOCIATED_USER' })
+        }
+    }
+    catch (error) {
+        res.status(422).json(error)
+    }
+})
 
 
 app.get('/scores', async function (req, res) {
