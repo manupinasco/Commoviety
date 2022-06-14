@@ -5,7 +5,7 @@ chai.use(chaiFetch);
 const {assert} = chai;
 
 
-describe('Message', () => {
+describe('Message deleting', () => {
     
     /* FALTA BEFORE ASYNC PARA HACER LAS DEMAS PRUEBAS */
     
