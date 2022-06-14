@@ -113,13 +113,12 @@ app.get('/moviesCreate', async function (req, res) {
 
 app.get('/moviesTopPopularity/:quantity', async function (req, res) {
     try {
-        movies = await Movie.findAll({
+        let movies = await Movie.findAll({
             limit: Number(req.params.quantity),
             order: [
                 ['quantScores', 'DESC']
             ]
         })
-        console.log(movies)
         res.send(movies)
     }
     catch(error) {
