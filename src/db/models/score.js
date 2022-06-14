@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW
     },
-    MovieId: {
+   MovieId: {
       type: DataTypes.INTEGER
     },
     UserId: {

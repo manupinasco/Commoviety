@@ -1,46 +1,44 @@
 'use strict';
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('movies', {
+    await queryInterface.createTable('listmovies', {
       id: {
         type: Sequelize.DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
 
-      name: {
-        type : Sequelize.DataTypes.STRING(300),
-
+      listId: {
+        type: Sequelize.DataTypes.INTEGER,
         allowNull: false
+
       },
 
-      description: {
-        type : Sequelize.DataTypes.STRING(300),
-
+      movieId: {
+        type: Sequelize.DataTypes.INTEGER,
         allowNull: false
-      },
-
-      platform: {
-        
-        type: Sequelize.DataTypes.ENUM('netflix','amazon','HBO'),
 
       },
+
 
       createdAt: {
         type: Sequelize.DataTypes.DATE,
 
         defaultValue: Sequelize.DataTypes.NOW
+
       },
 
       updatedAt: {
+
         type: Sequelize.DataTypes.DATE,
 
         defaultValue: Sequelize.DataTypes.NOW
       }
 
+
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('movies');
+    return queryInterface.dropTable('listMovies');
   }
 };
