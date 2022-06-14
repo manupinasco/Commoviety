@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      /* Movie.belongsToMany(models.List, {through: 'listmovies'}) */
       Movie.hasMany(models.Score)
     }
   }
@@ -42,6 +43,14 @@ module.exports = (sequelize, DataTypes) => {
     updatedAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW
+    },
+
+    quantScores: {
+      type: DataTypes.INTEGER,
+    },
+
+    score: {
+      type: DataTypes.FLOAT,
     }
   }, {
     sequelize,
