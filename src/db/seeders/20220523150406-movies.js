@@ -1,5 +1,5 @@
 'use strict';
-const {randMovie, randPhrase} = require('@ngneat/falso')
+const {randMovie, randPhrase, randNumber} = require('@ngneat/falso')
 function randomPlatform() {
   let num = Math.floor((Math.random() * (3 - 1 + 1)) + 1);
   if(num == 1){
@@ -21,6 +21,8 @@ module.exports = {
         platform: randomPlatform(),
         createdAt: new Date,
         updatedAt: new Date,
+        score: randNumber({ min: 0, max: 10 }),
+        quantScores: randNumber({ precision: 1 })
       })
     }
     await queryInterface.bulkInsert('movies', movies, {});
