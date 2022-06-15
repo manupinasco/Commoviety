@@ -160,8 +160,7 @@ app.post('/movies', async function (req, res) {
         description: req.body.description,
         platform: req.body.platform
     })
-    res.status(201).json({})
-    return movie.id
+    res.status(201).json({idMovie: movie.id})
 })
 
 app.get('/moviesTopPopularity/:quantity', async function (req, res) {
@@ -242,13 +241,13 @@ app.post('/scoreUser', async function (req, res) {
     }
 })
 
-app.delete('/movies', async function (req, res) {
+/* app.delete('/movies', async function (req, res) {
     Movie.destroy({
         where: {
             name: req.body.name
         }
     })
-})
+}) */
 
 /*            AGREGAR MENSAJE A FORO            */
 
@@ -455,10 +454,12 @@ app.get('/users', async function(req, res) {
 
 app.post('/users', async function (req, res) {
     let user = await User.create({
-        nickname: req.body.nickname
+        nickname: req.body.nickname,
+        mail: 'sdds',
+        password: 'assa',
+        reports: 0
     })
-    res.status(201).json({})
-    return user.id
+    res.status(201).json({idUser: user.id})
 })
 
 /*            DENUNCIAR USUARIO            */
@@ -495,3 +496,30 @@ app.delete('/listMovie', async function (req, res) {
     }
     })
 
+    app.delete('/movies', async function (req, res) {
+        try {
+            await Movie.destroy({
+                where: {
+                    id: req.body.id
+                  }
+            })
+            res.status(201).json({})
+        }
+        catch(error) {
+            res.status(422).json(error)
+        }
+        })
+
+        app.delete('/users', async function (req, res) {
+            try {
+                await User.destroy({
+                    where: {
+                        id: req.body.id
+                      }
+                })
+                res.status(201).json({})
+            }
+            catch(error) {
+                res.status(422).json(error)
+            }
+            })
