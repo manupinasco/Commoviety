@@ -67,9 +67,11 @@ app.post('/usersForums', async function (req, res) {
     try {
         let user = await User.findByPk(req.body.idUser)
         let forum = await Forum.findByPk(req.body.idForum)
+        let associationExists = await user.hasForum(forum)
 
-        if (user.hasForum(forum)) {
-            return res.status(422).json({ message: 'USERFORUM_EXISTS' })
+
+        if(associationExists) {
+            return res.status(422).json({message: 'USERFORUM_EXISTS'})
         }
 
         else {
@@ -167,6 +169,16 @@ app.post('/movies', async function (req, res) {
    }
 })
 
+app.get('/moviesTopPopularity/:quantity', async function (req, res) {
+        let movies = await Movie.findAll({
+            limit: Number(req.params.quantity),
+            order: [
+                ['quantScores', 'DESC']
+            ]
+        })
+        res.send(movies)
+})
+
 app.post('/scoreUser', async function (req, res) {
     try {
         let scoreObject = await Score.findAll({
@@ -208,7 +220,8 @@ app.post('/scoreUser', async function (req, res) {
                 where: {
                     UserId: req.body.idUser,
                     name: 'MoviesWatched'
-                }})
+                }
+            })
 
             if (list != null) {
                 let myList = await List.findByPk(list.id)
@@ -229,7 +242,7 @@ app.post('/scoreUser', async function (req, res) {
 
         }
     }
-    catch(error) {
+    catch (error) {
         res.status(422).json(error)
     }
 })
@@ -297,17 +310,17 @@ app.delete('/message', async function (req, res) {
     try {
         let message = await Message.findByPk(req.body.idMessage)
         let messageUser = await User.findByPk(message.getDataValue('userId'))
-        if(message.getDataValue('reports') >= 3){
-            if(messageUser.getDataValue('reports') >= 5){
+        if (message.getDataValue('reports') >= 3) {
+            if (messageUser.getDataValue('reports') >= 5) {
                 Message.destroy({
                     where: {
                         id: req.body.idMessage
                     }
-                }) 
-            }else{
+                })
+            } else {
                 return res.status(422).json({ message: 'NOT_BANNED_USER' })
             }
-        }else{
+        } else {
             return res.status(422).json({ message: 'FEW_REPORTS_IN_MESSAGE' })
         }
     }
@@ -321,16 +334,16 @@ app.delete('/message', async function (req, res) {
 app.put('/messageReport', async function (req, res) {
     try {
         let message = await Message.findByPk(req.body.idMessage)
-        if(message != null){
-            if(message.getDataValue('reports') < 3){
+        if (message != null) {
+            if (message.getDataValue('reports') < 3) {
                 message.update({
                     reports: message.getDataValue('reports') + 1,
                 })
                 res.status(201).json({})
-            }else{
+            } else {
                 return res.status(422).json({ message: 'MANY_TIMES_REPORTED_MESSAGE' })
             }
-        }else{
+        } else {
             return res.status(422).json({ message: 'MESSAGE_DOESNT_EXIST' })
         }
     }
@@ -373,10 +386,10 @@ app.post('/list', async function (req, res) {
             return res.status(422).json({ message: 'EMPTY_NAME' })
         }
     }
-    catch(error) {
+    catch (error) {
         res.status(422).json(error)
     }
-    
+
 })
 
 app.post('/listMovie', async function (req, res) {
@@ -384,18 +397,21 @@ app.post('/listMovie', async function (req, res) {
         let list = await List.findByPk(req.body.idList)
         let movie = await Movie.findByPk(req.body.idMovie)
         let associationExists = await list.hasMovie(movie)
+
         if( !associationExists) {
+            
             list.addMovie(movie)
             res.status(201).json({})
         }
         else {
+            
             return res.status(422).json({message: 'LISTMOVIE_ALREADY_EXISTS'})
         }
     }
         catch(error) {
             res.status(422).json(error)
         }
-    }) 
+    })
 
 app.delete('/user', async function (req, res){
     try {
@@ -411,7 +427,18 @@ app.delete('/user', async function (req, res){
         else {
             return res.status(422).json({message: 'USER_DOESNT_EXIST'})
         }
-        
+    }
+    catch(error) {
+        res.status(422).json(error)
+    }
+})
+
+app.delete('/usersForums', async function (req, res) {
+    try {
+        const user = await User.findByPk(req.body.idUser)
+        const forum = await Forum.findByPk(req.body.idForum)
+        forum.removeUser(user)
+        res.status(201).json({})
     }
     catch(error) {
         res.status(422).json(error)
@@ -436,7 +463,7 @@ app.get('/users', async function(req, res) {
     }
     res.send(data)
 })
-    
+
 app.post('/users', async function (req, res) {
     User.create({
         nickname: req.body.name,
@@ -465,3 +492,15 @@ app.put('/userReport', async function (req, res) {
         res.status(422).json(error)
     }
 })
+app.delete('/listMovie', async function (req, res) {
+    try {
+        const list = await List.findByPk(req.body.idList)
+        const movie = await Movie.findByPk(req.body.idMovie)
+        list.removeMovie(movie)
+        res.status(201).json({})
+    }
+    catch(error) {
+        res.status(422).json(error)
+    }
+    })
+

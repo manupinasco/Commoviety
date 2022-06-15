@@ -11,6 +11,8 @@ module.exports = {
         platform: rand(['netflix', 'amazon', 'HBO']),
         createdAt: new Date,
         updatedAt: new Date,
+        score: randNumber({ min: 0, max: 10 }),
+        quantScores: randNumber({ precision: 1 })
       })
     }
     await queryInterface.bulkInsert('movies', movies, {});
