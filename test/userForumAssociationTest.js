@@ -10,7 +10,7 @@ describe('UserForumAssociation', () => {
     let idUser
     let idForum
     before('Create User and Forum', () => {
-        let crearForum = async () => {
+        let createForum = async () => {
             return axios({
                 method : 'post',
                 url: 'http://localhost:4444/forums',
@@ -23,7 +23,7 @@ describe('UserForumAssociation', () => {
                 assert.equal(err.response.status, 201)
             })
         }
-        let crearUser = async () => {
+        let createUser = async () => {
             return axios({
                 method : 'post',
                 url: 'http://localhost:4444/users',
@@ -37,9 +37,8 @@ describe('UserForumAssociation', () => {
             })
         }
 
-        return Promise.all([crearForum, crearUser].map(fn => fn()))
+        return Promise.all([createForum, createUser].map(fn => fn()))
     })
-
 
 
     it('Returns 201 if User and Forum are saved', (done) => {
@@ -72,9 +71,9 @@ describe('UserForumAssociation', () => {
         })
     })
 
-    after('Delete UserForum, User y Forum', () => {
+    after('Delete UserForum, User and Forum', () => {
 
-        let borrarAsociacion = setTimeout((async() => { 
+        let deleteAssociation = async() => { 
             return axios({
             method: 'delete',
             url: 'http://localhost:4444/usersForums',
@@ -84,8 +83,8 @@ describe('UserForumAssociation', () => {
         }).catch((err) => {
             assert.equal(err.response.status, 201)
         })
-    }), 10)
-        let borrarForum = setTimeout((async () => {
+    }
+        async function deleteForum() {
             return axios({
                 method : 'delete',
                 url: 'http://localhost:4444/forums',
@@ -99,8 +98,8 @@ describe('UserForumAssociation', () => {
            
            
            
-        }), 5000)
-        let borrarUser = setTimeout((async () => {
+        }
+        async function deleteUser() {
             return axios({
                 method : 'delete',
                 url: 'http://localhost:4444/users',
@@ -111,11 +110,11 @@ describe('UserForumAssociation', () => {
             }).catch((err) => {
                 assert.equal(err.response.status, 201)
             })
-        }), 5000)
+        }
 
         
 
-    return Promise.all([borrarAsociacion, borrarUser, borrarForum])
+    return Promise.all([deleteAssociation].map(fn => fn())).then(deleteForum).then(deleteUser)
  
     })
 
