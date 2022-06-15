@@ -463,8 +463,8 @@ app.get('/users', async function(req, res) {
 app.post('/users', async function (req, res) {
     let user = await User.create({
         nickname: req.body.nickname,
-        mail: 'sdds',
-        password: 'assa',
+        mail: 'sm@example.com',
+        password: '****',
         reports: 0
     })
     res.status(201).json({idUser: user.id})
