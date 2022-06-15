@@ -336,7 +336,7 @@ app.put('/messageReport', async function (req, res) {
     }
 })
 
-app.post('/list', async function (req, res) {
+app.post('/lists', async function (req, res) {
     try {
         if (req.body.nameList != '') {
             if (req.body.nameList != 'MoviesWatched') {
@@ -354,7 +354,7 @@ app.post('/list', async function (req, res) {
                     await listInstance.save()
                     let user = await User.findByPk(req.body.idUser)
                     user.addList(listInstance)
-                    res.status(201).json({})
+                    res.status(201).json({idList: listInstance.id})
                 }
                 else {
                     return res.status(422).json({ message: 'NAME_ALREADY_IN_USE' })
@@ -381,19 +381,24 @@ app.post('/listMovie', async function (req, res) {
         let movie = await Movie.findByPk(req.body.idMovie)
         let associationExists = await list.hasMovie(movie)
 
-        if( !associationExists) {
-            
-            list.addMovie(movie)
-            res.status(201).json({})
-        }
-        else {
-            
+
+        if(associationExists) {
             return res.status(422).json({message: 'LISTMOVIE_ALREADY_EXISTS'})
         }
-    }
-        catch(error) {
-            res.status(422).json(error)
+
+        else {
+
+            list.addMovie(movie)
+            res.status(201).json({})
+
         }
+
+
+    }
+    catch (error) {
+        res.status(422).json(error)
+    }
+    
     })
 
 app.delete('/user', async function (req, res){
@@ -421,7 +426,6 @@ app.delete('/usersForums', async function (req, res) {
         let user = await User.findByPk(req.body.idUser)
         let forum = await Forum.findByPk(req.body.idForum)
         await forum.removeUsers(user)
-        console.log("HI")
         res.status(201).json({})
     }
     catch(error) {
@@ -484,7 +488,7 @@ app.delete('/listMovie', async function (req, res) {
     try {
         const list = await List.findByPk(req.body.idList)
         const movie = await Movie.findByPk(req.body.idMovie)
-        list.removeMovie(movie)
+        await list.removeMovie(movie)
         res.status(201).json({})
     }
     catch(error) {
@@ -533,3 +537,17 @@ app.delete('/listMovie', async function (req, res) {
                     res.status(422).json(error)
                 }
                 })
+
+                app.delete('/lists', async function (req, res) {
+                    try {
+                        await List.destroy({
+                            where: {
+                                id: req.body.id
+                              }
+                        })
+                        res.status(201).json({})
+                    }
+                    catch(error) {
+                        res.status(422).json(error)
+                    }
+                    })
