@@ -155,11 +155,13 @@ app.get('/movies', async function (req, res) {
 })
 
 app.post('/movies', async function (req, res) {
-    Movie.create({
+    let movie = await Movie.create({
         name: req.body.name,
-        description: 'lorem ipsum',
-        platform: 'netflix'
+        description: req.body.description,
+        platform: req.body.platform
     })
+    res.status(201).json({})
+    return movie.id
 })
 
 app.get('/moviesTopPopularity/:quantity', async function (req, res) {
@@ -452,9 +454,11 @@ app.get('/users', async function(req, res) {
 })
 
 app.post('/users', async function (req, res) {
-    User.create({
-        nickname: req.body.name,
+    let user = await User.create({
+        nickname: req.body.nickname
     })
+    res.status(201).json({})
+    return user.id
 })
 
 /*            DENUNCIAR USUARIO            */
