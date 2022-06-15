@@ -299,13 +299,15 @@ app.delete('/message', async function (req, res) {
     try {
         let message = await Message.findByPk(req.body.idMessage)
         let messageUser = await User.findByPk(message.getDataValue('userId'))
+        console.log(message.getDataValue('reports'))
         if (message.getDataValue('reports') >= 3) {
             if (messageUser.getDataValue('reports') >= 5) {
-                Message.destroy({
+                await Message.destroy({
                     where: {
                         id: req.body.idMessage
                     }
                 })
+                res.status(201).json({})
             } else {
                 return res.status(422).json({ message: 'NOT_BANNED_USER' })
             }
@@ -325,7 +327,7 @@ app.put('/messageReport', async function (req, res) {
         let message = await Message.findByPk(req.body.idMessage)
         if (message != null) {
             if (message.getDataValue('reports') < 3) {
-                message.update({
+                await message.update({
                     reports: message.getDataValue('reports') + 1,
                 })
                 res.status(201).json({})
