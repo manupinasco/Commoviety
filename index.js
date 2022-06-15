@@ -273,7 +273,7 @@ app.put('/banUser', async function (req, res) {
     try {
         let user = await User.findByPk(req.body.idUser)
         //Le asigno al usuario del mensaje 5 denuncias por lo que queda baneado para mandar mensajes
-        user.update({
+        await user.update({
             reports: 5,
         })
         res.status(201).json({})

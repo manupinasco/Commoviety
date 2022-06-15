@@ -50,14 +50,12 @@ describe('User reporting', () => {
 
     it("Returns 422 if user hasn't been reported because it has already 5 reports", async () => {
         //Agrego 5 denuncias al usuario y trato de volver a denunciarlo
-        let banUser = () => {
-            return axios({
+        return axios({
             method: 'put',
             url: 'http://localhost:4444/banUser',
             data: {idUser: idUser}
-        })}
-        
-        let reportUser = () => {
+        })
+        .then(() => {
             return axios({
                 method: 'put',
                 url: 'http://localhost:4444/userReport',
@@ -65,9 +63,7 @@ describe('User reporting', () => {
             })
             .catch(err => {
                 assert.equal(err.response.data.message, 'MANY_TIMES_REPORTED_USER')
-            })}
-
-        return Promise.all([banUser,reportUser].map(fn => fn())).then() 
+        })})
     })
 
     after(() => {
