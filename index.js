@@ -141,6 +141,7 @@ app.get('/movies', async function (req, res) {
                     }
                 }
             })
+            console.log(data)
         } else {
             //Si el nombre enviado tiene menos de 3 caracteres, aunque alguna pelicula empieze por este, no se decolvera
             data = []
@@ -153,11 +154,17 @@ app.get('/movies', async function (req, res) {
 })
 
 app.post('/movies', async function (req, res) {
-    Movie.create({
-        name: req.body.name,
-        description: 'lorem ipsum',
-        platform: 'netflix'
-    })
+   try{
+        Movie.create({
+            name: req.body.name,
+            description: 'lorem ipsum',
+            platform: 'netflix'
+        })
+        res.status(201).json({})
+   }
+   catch(error){
+    res.status(422).json({})
+   }
 })
 
 app.post('/scoreUser', async function (req, res) {
@@ -228,11 +235,17 @@ app.post('/scoreUser', async function (req, res) {
 })
 
 app.delete('/movies', async function (req, res) {
+    try{
     Movie.destroy({
         where: {
             name: req.body.name
         }
     })
+    res.status(201).json({})
+    }
+   catch(error){
+    res.status(422).json({})
+   }
 })
 
 /*            AGREGAR MENSAJE A FORO            */
