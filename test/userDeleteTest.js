@@ -27,13 +27,12 @@ describe('UserDelete', () => {
 
         axios({
             method: 'delete',
-            url: 'http://localhost:4444/user',
-            data: {idUser: idUser}
+            url: 'http://localhost:4444/users',
+            data: {id: idUser}
             
         }
         
         ).then((response) => {
-            
             assert.equal(response.status, 201)
             done()
         }).catch((err) => {
