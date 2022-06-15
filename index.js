@@ -13,24 +13,6 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.listen(4444)
 
-
-
-app.get('/users', async function (req, res) {
-
-    try {
-        let data = await User.findAll()
-
-        res.send(data)
-    }
-    catch (error) {
-        console.log(error)
-    }
-
-
-
-
-})
-
 app.get('/forums', async function (req, res) {
 
 
@@ -53,12 +35,6 @@ app.get('/forums', async function (req, res) {
 
 })
 
-
-app.get('/users/:id', async function (req, res) {
-    let data = await User.findByPk(req.params.id)
-
-    res.send(data)
-})
 
 app.post('/usersForums', async function (req, res) {
 
