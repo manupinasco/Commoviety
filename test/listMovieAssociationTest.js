@@ -12,7 +12,7 @@ describe('ListMovieAssociation', () => {
         axios({
             method: 'post',
             url: 'http://localhost:4444/listMovie',
-            data: {idList: 101, idMovie: 5}
+            data: {idList: 98, idMovie: 5}
             
         }
         
@@ -30,12 +30,23 @@ describe('ListMovieAssociation', () => {
         axios({
             method : 'post',
             url: 'http://localhost:4444/listMovie',
-            data: {idList: 101, idMovie: 5}
+            data: {idList: 98, idMovie: 5}
         })
         .catch(err => {
             assert.equal(err.response.data.message, 'LISTMOVIE_ALREADY_EXISTS')
             done()
         })
     })
+
+    after('Delete ListMovie', (done) => {
+        axios({
+            method: 'delete',
+            url: 'http://localhost:4444/listMovie',
+            data: {idList: 98, idMovie: 5}
+        })
+        done()
+ 
+    })
+
 
 })
