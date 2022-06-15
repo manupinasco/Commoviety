@@ -13,28 +13,10 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.listen(4444)
 
-app.get('/forums', async function (req, res) {
 
-
-    let q = { "id": 2 }
-
-    try {
-        let data = await Forum.findAll({
-            where: q/* ,
-            limit: 20 */
-        })
-
-        res.send(data)
-    }
-    catch (error) {
-        console.log(error)
-    }
-
-
-
-
-})
-
+/* ------------------------------------------------- */
+/* -----------ASSOCIATE USER WITH FORUM------------- */
+/* ------------------------------------------------- */
 
 app.post('/usersForums', async function (req, res) {
 
@@ -63,7 +45,11 @@ app.post('/usersForums', async function (req, res) {
     }
 })
 
-/*                   DESASOCIAR USUARIOS                    */
+
+
+/* ------------------------------------------------- */
+/* ----------DESASSOCIATE USER WITH FORUM----------- */
+/* ------------------------------------------------- */
 app.delete('/usersForums', async function (req, res) {
     try {
         let user = await User.findByPk(req.body.idUser)
@@ -84,12 +70,9 @@ app.delete('/usersForums', async function (req, res) {
 })
 
 
-app.get('/scores', async function (req, res) {
-    let data = await Score.findAll()
-
-
-    res.send(data)
-})
+/* ------------------------------------------------- */
+/* ----------------GET SCORES BY ID----------------- */
+/* ------------------------------------------------- */
 
 app.get('/scores/:id', async function (req, res) {
     let data = await Score.findByPk(req.params.id)
@@ -98,7 +81,9 @@ app.get('/scores/:id', async function (req, res) {
     res.send(data)
 })
 
-/*            BUSQUEDA DE PELICULA POR NOMBRE            */
+/* ------------------------------------------------- */
+/* -------------SEARCH MOVIES BY NAME--------------- */
+/* ------------------------------------------------- */
 app.get('/movies', async function (req, res) {
     if (req.query.name != undefined) {
         //Se revisa si al menos hay tres caracteres cuando se busca por nombre 
@@ -123,6 +108,10 @@ app.get('/movies', async function (req, res) {
     res.send(data)
 })
 
+/* ------------------------------------------------- */
+/* -----------------CREATE MOVIE-------------------- */
+/* ------------------------------------------------- */
+
 app.post('/movies', async function (req, res) {
     let movie = await Movie.create({
         name: req.body.name,
@@ -132,12 +121,20 @@ app.post('/movies', async function (req, res) {
     res.status(201).json({idMovie: movie.id})
 })
 
+/* ------------------------------------------------- */
+/* ------------------CREATE FORUMS------------------ */
+/* ------------------------------------------------- */
+
 app.post('/forums', async function (req, res) {
     let forum = await Forum.create({
 
     })
     res.status(201).json({idForum: forum.id})
 })
+
+/* ------------------------------------------------- */
+/* --------GET TOP POPULARITY OF MOVIES------------- */
+/* ------------------------------------------------- */
 
 app.get('/moviesTopPopularity/:quantity', async function (req, res) {
         let movies = await Movie.findAll({
@@ -148,6 +145,10 @@ app.get('/moviesTopPopularity/:quantity', async function (req, res) {
         })
         res.send(movies)
 })
+
+/* ------------------------------------------------- */
+/* -------CREATE SCORE ASSOCIATED TO A USER--------- */
+/* ------------------------------------------------- */
 
 app.post('/scoreUser', async function (req, res) {
     try {
@@ -217,7 +218,9 @@ app.post('/scoreUser', async function (req, res) {
     }
 })
 
-/*            AGREGAR MENSAJE A FORO            */
+/* ------------------------------------------------- */
+/* ----------------ADD MESSAGE TO FORUM------------- */
+/* ------------------------------------------------- */
 
 app.post('/messagesForums', async function (req, res) {
     try {
@@ -245,6 +248,10 @@ app.post('/messagesForums', async function (req, res) {
     }
 })
 
+/* ------------------------------------------------- */
+/* ------------------CREATE MESSAGE----------------- */
+/* ------------------------------------------------- */
+
 app.post('/messages', async function (req, res) {
     let message = await Message.create({
         userId: req.body.idUser,
@@ -254,6 +261,9 @@ app.post('/messages', async function (req, res) {
     res.status(201).json({idMessage: message.id})
 })
 
+/* ------------------------------------------------- */
+/* ---------------------BAN USER-------------------- */
+/* ------------------------------------------------- */
 
 app.put('/banUser', async function (req, res) {
     try {
@@ -270,7 +280,9 @@ app.put('/banUser', async function (req, res) {
     }
 })
 
-/*            ELIMINAR MENSAJE            */
+/* ------------------------------------------------- */
+/* -------------------DELETE MESSAGE---------------- */
+/* ------------------------------------------------- */
 app.delete('/message', async function (req, res) {
     try {
         let message = await Message.findByPk(req.body.idMessage)
@@ -297,7 +309,9 @@ app.delete('/message', async function (req, res) {
     }
 })
 
-/*            DENUNCIAR MENSAJE            */
+/* ------------------------------------------------- */
+/* -------------------REPORT MESSAGE---------------- */
+/* ------------------------------------------------- */
 app.put('/messageReport', async function (req, res) {
     try {
         let message = await Message.findByPk(req.body.idMessage)
@@ -319,6 +333,10 @@ app.put('/messageReport', async function (req, res) {
         res.status(422).json(error)
     }
 })
+
+/* ------------------------------------------------- */
+/* -------------CREATE A LIST OF MOVIES------------- */
+/* ------------------------------------------------- */
 
 app.post('/lists', async function (req, res) {
     try {
@@ -359,6 +377,11 @@ app.post('/lists', async function (req, res) {
 
 })
 
+
+/* ------------------------------------------------- */
+/* -----------------ADD MOVIE TO A LIST------------- */
+/* ------------------------------------------------- */
+
 app.post('/listMovie', async function (req, res) {
     try {
         let list = await List.findByPk(req.body.idList)
@@ -385,7 +408,11 @@ app.post('/listMovie', async function (req, res) {
     
     })
 
-app.delete('/user', async function (req, res){
+/* ------------------------------------------------- */
+/* --------------------DELETE USER------------------ */
+/* ------------------------------------------------- */
+
+/* app.delete('/user', async function (req, res){
     try {
         let user = await User.findByPk(req.body.idUser)
         if(user != null) {
@@ -404,18 +431,10 @@ app.delete('/user', async function (req, res){
         res.status(422).json(error)
     }
 })
-
-app.delete('/usersForums', async function (req, res) {
-    try {
-        let user = await User.findByPk(req.body.idUser)
-        let forum = await Forum.findByPk(req.body.idForum)
-        await forum.removeUsers(user)
-        res.status(201).json({})
-    }
-    catch(error) {
-        res.status(422).json(error)
-    }
-})
+ */
+/* ------------------------------------------------- */
+/* ------------SEARCH USER BY NICKNAME-------------- */
+/* ------------------------------------------------- */
 
 app.get('/users', async function(req, res) {
     if (req.query.name != undefined) {
@@ -436,6 +455,10 @@ app.get('/users', async function(req, res) {
     res.send(data)
 })
 
+/* ------------------------------------------------- */
+/* --------------------CREATE USER------------------ */
+/* ------------------------------------------------- */
+
 app.post('/users', async function (req, res) {
     let user = await User.create({
         nickname: req.body.nickname,
@@ -446,7 +469,9 @@ app.post('/users', async function (req, res) {
     res.status(201).json({idUser: user.id})
 })
 
-/*            DENUNCIAR USUARIO            */
+/* ------------------------------------------------- */
+/* --------------------REPORT USER------------------ */
+/* ------------------------------------------------- */
 app.put('/userReport', async function (req, res) {
     try {
         let user = await User.findByPk(req.body.idUser)
@@ -468,6 +493,10 @@ app.put('/userReport', async function (req, res) {
         res.status(422).json(error)
     }
 })
+
+/* ------------------------------------------------- */
+/* -------------REMOVE MOVIE FROM LIST-------------- */
+/* ------------------------------------------------- */
 app.delete('/listMovie', async function (req, res) {
     try {
         const list = await List.findByPk(req.body.idList)
@@ -480,58 +509,75 @@ app.delete('/listMovie', async function (req, res) {
     }
     })
 
-    app.delete('/movies', async function (req, res) {
-        try {
-            await Movie.destroy({
-                where: {
-                    id: req.body.id
-                  }
-            })
-            res.status(201).json({})
-        }
-        catch(error) {
-            res.status(422).json(error)
-        }
+
+/* ------------------------------------------------- */
+/* --------------------DELETE MOVIE----------------- */
+/* ------------------------------------------------- */
+
+app.delete('/movies', async function (req, res) {
+    try {
+        await Movie.destroy({
+            where: {
+                id: req.body.id
+            }
         })
+        res.status(201).json({})
+    }
+    catch(error) {
+        res.status(422).json(error)
+    }
+})
 
-        app.delete('/users', async function (req, res) {
-            try {
-                await User.destroy({
-                    where: {
-                        id: req.body.id
-                      }
-                })
-                res.status(201).json({})
+/* ------------------------------------------------- */
+/* --------------------DELETE USER------------------ */
+/* ------------------------------------------------- */
+
+app.delete('/users', async function (req, res) {
+    try {
+        await User.destroy({
+            where: {
+                id: req.body.id
             }
-            catch(error) {
-                res.status(422).json(error)
+        })
+        res.status(201).json({})
+    }
+    catch(error) {
+        res.status(422).json(error)
+    }
+})
+
+/* ------------------------------------------------- */
+/* --------------------DELETE FORUM------------------ */
+/* ------------------------------------------------- */
+
+app.delete('/forums', async function (req, res) {
+    try {
+        await Forum.destroy({
+            where: {
+                id: req.body.id
             }
-            })
+        })
+        res.status(201).json({})
+    }
+    catch(error) {
+        res.status(422).json(error)
+    }
+})
 
-            app.delete('/forums', async function (req, res) {
-                try {
-                    await Forum.destroy({
-                        where: {
-                            id: req.body.id
-                          }
-                    })
-                    res.status(201).json({})
-                }
-                catch(error) {
-                    res.status(422).json(error)
-                }
-                })
+/* ------------------------------------------------- */
+/* --------------------DELETE LIST------------------ */
+/* ------------------------------------------------- */
 
-                app.delete('/lists', async function (req, res) {
-                    try {
-                        await List.destroy({
-                            where: {
-                                id: req.body.id
-                              }
-                        })
-                        res.status(201).json({})
-                    }
-                    catch(error) {
-                        res.status(422).json(error)
-                    }
-                    })
+app.delete('/lists', async function (req, res) {
+    try {
+        await List.destroy({
+            where: {
+                id: req.body.id
+            }
+        })
+        res.status(201).json({})
+    }
+    catch(error) {
+        res.status(422).json(error)
+    }
+})
