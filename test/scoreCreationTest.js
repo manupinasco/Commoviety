@@ -24,7 +24,7 @@ describe('ScoreCreation', () => {
                 idMovie = response.data.idMovie
                 assert.equal(response.status, 201)
             }, (err) => {
-                assert.equal(err.response.status, 422)
+                assert.equal(err.response.status, 201)
             })
         }
         let createUser = async () => {
@@ -37,7 +37,7 @@ describe('ScoreCreation', () => {
                 idUser = response.data.idUser
                 assert.equal(response.status, 201)
             }, (err) => {
-                assert.equal(err.response.status, 422)
+                assert.equal(err.response.status, 201)
             })
         }
         let createMovie2 = async () => {
@@ -50,7 +50,7 @@ describe('ScoreCreation', () => {
                 idMovie2 = response.data.idMovie
                 assert.equal(response.status, 201)
             }, (err) => {
-                assert.equal(err.response.status, 422)
+                assert.equal(err.response.status, 201)
             })
         }
         let createUser2 = async () => {
@@ -63,7 +63,7 @@ describe('ScoreCreation', () => {
                 idUser2 = response.data.idUser
                 assert.equal(response.status, 201)
             }, (err) => {
-                assert.equal(err.response.status, 422)
+                assert.equal(err.response.status, 201)
             })
         }
         return Promise.all([createMovie, createUser, createMovie2, createUser2].map(fn => fn()))
@@ -82,7 +82,7 @@ describe('ScoreCreation', () => {
             assert.equal(response.status, 201)
             done()
         }, (err) => {
-            assert.equal(err.response.status, 422)
+            assert.equal(err.response.status, 201)
             done()
         })
     })
@@ -98,7 +98,7 @@ describe('ScoreCreation', () => {
             assert.equal(response.status, 201)
             done()
         }, (err) => {
-            assert.equal(err.response.status, 422)
+            assert.equal(err.response.status, 201)
             done()
         })
     })
@@ -114,7 +114,7 @@ describe('ScoreCreation', () => {
             assert.equal(response.status, 201)
             done()
         }, (err) => {
-            assert.equal(err.response.status, 422)
+            assert.equal(err.response.status, 201)
             done()
         })
     })
@@ -130,7 +130,7 @@ describe('ScoreCreation', () => {
             assert.equal(response.status, 201)
             done()
         }, (err) => {
-            assert.equal(err.response.status, 422)
+            assert.equal(err.response.status, 201)
             done()
         })
     }) 
@@ -145,7 +145,7 @@ describe('ScoreCreation', () => {
             }).then((response) => {
                 assert.equal(response.status, 201)
             }, (err) => {
-                assert.equal(err.response.status, 422)
+                assert.equal(err.response.status, 201)
             })
             
             
@@ -186,7 +186,7 @@ describe('ScoreCreation', () => {
 
                 assert.equal(response.status, 201)
             }, (err) => {
-                assert.equal(err.response.status, 422)
+                assert.equal(err.response.status, 201)
             })
         }
         
