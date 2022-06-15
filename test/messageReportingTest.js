@@ -7,51 +7,80 @@ const {assert} = chai;
 
 describe('Message reporting', () => {
     
-    /* FALTA BEFORE ASYNC PARA HACER LAS DEMAS PRUEBAS */
-    
-    /* before((done) => {
-       
-    }) */
+    let idUser
+    let idMessage
 
-    it('Returns 201 if the message is reported correctly', (done) => {
-        axios({
+    before(async () => {
+        return axios({
+            method: 'post',
+            url: 'http://localhost:4444/users',
+            data: { nickname: 'Clark' }
+        })
+        .then((response) => {
+            idUser = response.data.idUser
+            return axios({
+                method: 'post',
+                url: 'http://localhost:4444/messages',
+                data: {idUser: idUser}
+            })
+            .then((response) => {
+                idMessage = response.data.idMessage
+            })
+        })
+    })
+
+    it('Returns 201 if the message is reported correctly', () => {
+        return axios({
             method: 'put',
             url: 'http://localhost:4444/messageReport',
-            data: {idMessage: 5}
-            
+            data: {idMessage: idMessage}
         }
         ).then((response) => {
             assert.equal(response.status, 201)
-            done()
-        }, (err) => {
-            assert.equal(err.response.status, 201)
-            done()
         })
     }) 
 
-    it("Returns 422 if message hasn't been reported because it doesn't exists", (done) => {
-        axios({
+
+    it("Returns 422 if message hasn't been reported because the message has already 3 reports", async () => {
+        return axios({
+            method : 'put',
+            url: 'http://localhost:4444/messageReport',
+            data: {idMessage: idMessage}
+        })
+        .then(() => {return axios({
+            method : 'put',
+            url: 'http://localhost:4444/messageReport',
+            data: {idMessage: idMessage}
+        })})
+        .then( () => {
+            return axios({
+            method: 'put',
+            url: 'http://localhost:4444/messageReport',
+            data: {idMessage: idMessage}
+            })
+            .catch(err => {
+                assert.equal(err.response.data.message, 'MANY_TIMES_REPORTED_MESSAGE')
+            })
+        })
+    })
+
+    it("Returns 422 if message hasn't been reported because it doesn't exists", async () => {
+        return axios({
             method: 'put',
             url: 'http://localhost:4444/messageReport',
             data: {idMessage: 1000000000000000}
         })
         .catch(err => {
             assert.equal(err.response.data.message, 'MESSAGE_DOESNT_EXIST')
-            done()
         })
     })
 
-    /* it("Returns 422 if message hasn't been reported because the message has already 3 reports", (done) => {
-        axios({
-            method: 'put',
-            url: 'http://localhost:4444/messageReport',
-            data: {idMessage: 8}
+    after(() => {
+        return axios({
+            method : 'delete',
+            url: 'http://localhost:4444/users',
+            data: {id: idUser}
         })
-        .catch(err => {
-            assert.equal(err.response.data.message, 'MANY_TIMES_REPORTED_MESSAGE')
-            done()
-        })
-    }) */
-
+    })
 
 })
