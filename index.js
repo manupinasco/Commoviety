@@ -75,16 +75,11 @@ app.post('/usersForums', async function (req, res) {
         }
 
         else {
-            if (user.getForums().length < 25) {
-                return res.status(403).json({ message: 'LIMIT_AMOUNT_FORUMS' })
-            }
-            else {
 
                 forum.addUser(user)
 
                 res.status(201).json({})
 
-            }
         }
 
 
@@ -162,6 +157,13 @@ app.post('/movies', async function (req, res) {
         platform: req.body.platform
     })
     res.status(201).json({idMovie: movie.id})
+})
+
+app.post('/forums', async function (req, res) {
+    let forum = await Forum.create({
+
+    })
+    res.status(201).json({idForum: forum.id})
 })
 
 app.get('/moviesTopPopularity/:quantity', async function (req, res) {
@@ -416,9 +418,10 @@ app.delete('/user', async function (req, res){
 
 app.delete('/usersForums', async function (req, res) {
     try {
-        const user = await User.findByPk(req.body.idUser)
-        const forum = await Forum.findByPk(req.body.idForum)
-        forum.removeUser(user)
+        let user = await User.findByPk(req.body.idUser)
+        let forum = await Forum.findByPk(req.body.idForum)
+        await forum.removeUsers(user)
+        console.log("HI")
         res.status(201).json({})
     }
     catch(error) {
@@ -516,3 +519,17 @@ app.delete('/listMovie', async function (req, res) {
                 res.status(422).json(error)
             }
             })
+
+            app.delete('/forums', async function (req, res) {
+                try {
+                    await Forum.destroy({
+                        where: {
+                            id: req.body.id
+                          }
+                    })
+                    res.status(201).json({})
+                }
+                catch(error) {
+                    res.status(422).json(error)
+                }
+                })
