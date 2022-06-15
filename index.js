@@ -75,11 +75,9 @@ app.post('/usersForums', async function (req, res) {
         }
 
         else {
-
-                forum.addUser(user)
-
+                await forum.addUser(user)
                 res.status(201).json({})
-
+                
         }
 
 
@@ -90,15 +88,14 @@ app.post('/usersForums', async function (req, res) {
 })
 
 /*                   DESASOCIAR USUARIOS                    */
-app.post('/usersForumsDissociation', async function (req, res) {
+app.delete('/usersForums', async function (req, res) {
     try {
         let user = await User.findByPk(req.body.idUser)
         let forum = await Forum.findByPk(req.body.idForum)
         let userForumAssoExist = await user.hasForum(forum)
-        console.log(userForumAssoExist)
         //Se revisa si el usuario y el foro estan asociados
         if (userForumAssoExist) {
-            forum.removeUser(user)
+            await forum.removeUsers(user)
             res.status(201).json({})
         }
         else {
@@ -409,19 +406,6 @@ app.delete('/user', async function (req, res){
         else {
             return res.status(422).json({message: 'USER_DOESNT_EXIST'})
         }
-    }
-    catch(error) {
-        res.status(422).json(error)
-    }
-})
-
-app.delete('/usersForums', async function (req, res) {
-    try {
-        let user = await User.findByPk(req.body.idUser)
-        let forum = await Forum.findByPk(req.body.idForum)
-        await forum.removeUsers(user)
-        console.log("HI")
-        res.status(201).json({})
     }
     catch(error) {
         res.status(422).json(error)
