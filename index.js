@@ -249,12 +249,12 @@ app.post('/scoreUser', async function (req, res) {
 
 app.delete('/movies', async function (req, res) {
     try{
-    Movie.destroy({
-        where: {
-            name: req.body.name
-        }
-    })
-    res.status(201).json({})
+       await Movie.destroy({
+            where: {
+                name: req.body.name
+            }
+        })
+        res.status(201).json({})
     }
    catch(error){
     res.status(422).json({})
