@@ -14,7 +14,7 @@ describe('ScoreCreation', () => {
 
 
     before('Create User and Movie', () => {
-        let crearMovie = async () => {
+        let createMovie = async () => {
             return axios({
                 method : 'post',
                 url: 'http://localhost:4444/movies',
@@ -27,7 +27,7 @@ describe('ScoreCreation', () => {
                 assert.equal(err.response.status, 422)
             })
         }
-        let crearUser = async () => {
+        let createUser = async () => {
             return axios({
                 method : 'post',
                 url: 'http://localhost:4444/users',
@@ -40,7 +40,7 @@ describe('ScoreCreation', () => {
                 assert.equal(err.response.status, 422)
             })
         }
-        let crearMovie2 = async () => {
+        let createMovie2 = async () => {
             return axios({
                 method : 'post',
                 url: 'http://localhost:4444/movies',
@@ -53,7 +53,7 @@ describe('ScoreCreation', () => {
                 assert.equal(err.response.status, 422)
             })
         }
-        let crearUser2 = async () => {
+        let createUser2 = async () => {
             return axios({
                 method : 'post',
                 url: 'http://localhost:4444/users',
@@ -66,7 +66,7 @@ describe('ScoreCreation', () => {
                 assert.equal(err.response.status, 422)
             })
         }
-        return Promise.all([crearMovie, crearUser, crearMovie2, crearUser2].map(fn => fn()))
+        return Promise.all([createMovie, createUser, createMovie2, createUser2].map(fn => fn()))
     })
 
     it('Returns 201 if the Score is saved and associated', (done) => {
@@ -136,7 +136,7 @@ describe('ScoreCreation', () => {
     }) 
 
     after('Delete User and Movie', () => {
-        let borrarMovie = async () => {
+        let deleteMovie = async () => {
             return axios({
                 method : 'delete',
                 url: 'http://localhost:4444/movies',
@@ -151,7 +151,7 @@ describe('ScoreCreation', () => {
             
             
         }
-        let borrarUser = async () => {
+        let deleteUser = async () => {
             return axios({
                 method : 'delete',
                 url: 'http://localhost:4444/users',
@@ -163,7 +163,7 @@ describe('ScoreCreation', () => {
                 assert.equal(err.response.status, 422)
             })
         }
-        let borrarMovie2 = async () => {
+        let deleteMovie2 = async () => {
             return axios({
                 method : 'delete',
                 url: 'http://localhost:4444/movies',
@@ -176,7 +176,7 @@ describe('ScoreCreation', () => {
                 assert.equal(err.response.status, 422)
             })
         }
-        let borrarUser2 = async () => {
+        let deleteUser2 = async () => {
             return axios({
                 method : 'delete',
                 url: 'http://localhost:4444/users',
@@ -190,7 +190,7 @@ describe('ScoreCreation', () => {
             })
         }
         
-        return Promise.all([borrarMovie, borrarUser, borrarMovie2, borrarUser2].map(fn => fn()))
+        return Promise.all([deleteMovie, deleteUser, deleteMovie2, deleteUser2].map(fn => fn()))
 
         
     })
