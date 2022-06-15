@@ -67,9 +67,11 @@ app.post('/usersForums', async function (req, res) {
     try {
         let user = await User.findByPk(req.body.idUser)
         let forum = await Forum.findByPk(req.body.idForum)
+        let associationExists = await user.hasForum(forum)
 
-        if (user.hasForum(forum)) {
-            return res.status(422).json({ message: 'USERFORUM_EXISTS' })
+
+        if(associationExists) {
+            return res.status(422).json({message: 'USERFORUM_EXISTS'})
         }
 
         else {
@@ -399,6 +401,15 @@ app.delete('/user', async function (req, res){
             return res.status(422).json({message: 'USER_DOESNT_EXIST'})
         }
         
+    }
+}) 
+
+app.delete('/usersForums', async function (req, res) {
+    try {
+        const user = await User.findByPk(req.body.idUser)
+        const forum = await Forum.findByPk(req.body.idForum)
+        forum.removeUser(user)
+        res.status(201).json({})
     }
     catch(error) {
         res.status(422).json(error)
