@@ -411,9 +411,11 @@ app.delete('/user', async function (req, res){
         else {
             return res.status(422).json({message: 'USER_DOESNT_EXIST'})
         }
-
     }
-}) 
+    catch(error) {
+        res.status(422).json(error)
+    }
+})
 
 app.delete('/usersForums', async function (req, res) {
     try {
