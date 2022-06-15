@@ -274,10 +274,9 @@ app.post('/messageForum', async function (req, res) {
 
 app.put('/banUser', async function (req, res) {
     try {
-        let message = await Message.findByPk(req.body.idMessage)
-        let messageUser = await User.findByPk(message.getDataValue('userId'))
+        let user = await User.findByPk(req.body.idUser)
         //Le asigno al usuario del mensaje 5 denuncias por lo que queda baneado para mandar mensajes
-        messageUser.update({
+        user.update({
             reports: 5,
         })
         res.status(201).json({})
