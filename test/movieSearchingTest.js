@@ -5,32 +5,11 @@ chai.use(chaiFetch)
 const { assert } = chai
 
 describe('Movie seaching by name', () => {
-    before((done) => {
-        axios({
+    before(() => {
+        return axios({
             method: 'post',
             url: 'http://localhost:4444/movies',
             data: {name: "Spiderman"}
-            
-        })
-        .then(response => {
-            done()
-        })
-        .catch(err => {
-            done()
-        })
-    })
-
-    after((done) => {
-        axios({
-            method: 'delete',
-            url: 'http://localhost:4444/movies',
-            data: {name: "Spiderman"}
-        })
-        .then(response => {
-            done()
-        })
-        .catch(err => {
-            done()
         })
     })
 
@@ -42,7 +21,7 @@ describe('Movie seaching by name', () => {
             assert(response.data[0].name.startsWith('Spiderman'))
             done()
         })
-    })
+    }) 
 
     it("Finds a movie if an existing movie's name starts with the sent field and the field has more than 2 characters", (done) => {
         axios({
@@ -71,6 +50,14 @@ describe('Movie seaching by name', () => {
         }).then(response => {
             assert.equal(response.data.length, 0)
             done()
+        })
+    })
+
+    after(() => {
+        return axios({
+            method: 'delete',
+            url: 'http://localhost:4444/movies',
+            data: {name: "Spiderman"}
         })
     })
 })
