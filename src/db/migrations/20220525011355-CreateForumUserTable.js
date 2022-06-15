@@ -39,6 +39,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('ForumUser');
+    return queryInterface.dropTable('forumusers');
   }
 };
