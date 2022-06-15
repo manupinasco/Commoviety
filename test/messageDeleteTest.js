@@ -2,56 +2,96 @@ const chai = require('chai');
 const axios = require('axios');
 const chaiFetch = require('chai-fetch');
 chai.use(chaiFetch);
-const {assert} = chai;
+const { assert } = chai;
 
 
 describe('Message deleting', () => {
-    
-    /* FALTA BEFORE ASYNC PARA HACER LAS DEMAS PRUEBAS */
-    
-    /* before((done) => {
-       
-    }) */
 
-    /* it('Returns 201 if the message is deleted', (done) => {
-        axios({
-            method: 'delete',
-            url: 'http://localhost:4444/message',
-            data: {idMessage: 8}
-            
-        }
-        ).then((response) => {
-            assert.equal(response.status, 201)
-            done()
-        }, (err) => {
-            assert.equal(err.response.status, 201)
-            done()
-        })
-    }) */
+    let idUser
+    let idMessage
 
-    it("Returns 422 if message hasn't been deleted because the message has less than 3 reports", (done) => {
-        axios({
-            method: 'delete',
-            url: 'http://localhost:4444/message',
-            data: {idMessage: 8}
+    before(async () => {
+        return axios({
+            method: 'post',
+            url: 'http://localhost:4444/users',
+            data: { nickname: 'Mike' }
         })
-        .catch(err => {
-            assert.equal(err.response.data.message, 'FEW_REPORTS_IN_MESSAGE')
-            done()
+        .then((response) => {
+            idUser = response.data.idUser
+            return axios({
+                method: 'post',
+                url: 'http://localhost:4444/messages',
+                data: {idUser: idUser}
+            })
+            .then((response) => {
+                idMessage = response.data.idMessage
+            })
         })
     })
 
-    /* it("Returns 422 if message hasn't been deleted because the message has more than 2 reports but the user has less than 5 reports", (done) => {
-        axios({
+    it("Returns 422 if message hasn't been deleted because the message has less than 3 reports", async () => {
+            return axios({
+                method: 'delete',
+                url: 'http://localhost:4444/message',
+                data: {idMessage: idMessage}
+            })
+            .catch(err => {
+                assert.equal(err.response.data.message, 'FEW_REPORTS_IN_MESSAGE')
+            })
+    }) 
+
+    it("Returns 422 if message hasn't been deleted because the message has more than 2 reports but the user has less than 5 reports", async () => {
+        
+        return axios({
+            method : 'put',
+            url: 'http://localhost:4444/messageReport',
+            data: {idMessage: idMessage}
+        })
+        .then(() => {return axios({
+            method : 'put',
+            url: 'http://localhost:4444/messageReport',
+            data: {idMessage: idMessage}
+        })})
+        .then(() => {return axios({
+            method : 'put',
+            url: 'http://localhost:4444/messageReport',
+            data: {idMessage: idMessage}
+        })})
+        .then( () => {
+            return axios({
             method: 'delete',
             url: 'http://localhost:4444/message',
-            data: {idMessage: 8}
+            data: {idMessage: idMessage}
+            })
+            .catch(err => {
+                assert.equal(err.response.data.message, 'NOT_BANNED_USER')
+            })
         })
-        .catch(err => {
-            assert.equal(err.response.data.message, 'NOT_BANNED_USER')
-            done()
+    })
+
+    it("Returns 201 if the message is deleted", async () => {
+        return axios({
+            method: 'put',
+            url: 'http://localhost:4444/banUser',
+            data: {idUser: idUser}
         })
-    }) */
+        .then(() => {
+            return axios({
+            method: 'delete',
+            url: 'http://localhost:4444/message',
+            data: {idMessage: idMessage}
+            })
+            .then(response => {
+                assert.equal(response.status,201)
+            })
+        })
+    })
 
-
+    after(() => {
+        return axios({
+            method : 'delete',
+            url: 'http://localhost:4444/users',
+            data: {id: idUser}
+        })
+    })
 })
