@@ -156,17 +156,12 @@ app.get('/movies', async function (req, res) {
 })
 
 app.post('/movies', async function (req, res) {
-   try{
-        await Movie.create({
-            name: req.body.name,
-            description: 'lorem ipsum',
-            platform: 'netflix'
-        })
-        res.status(201).json({})
-   }
-   catch(error){
-    res.status(422).json({})
-   }
+    let movie = await Movie.create({
+        name: req.body.name,
+        description: req.body.description,
+        platform: req.body.platform
+    })
+    res.status(201).json({idMovie: movie.id})
 })
 
 app.get('/moviesTopPopularity/:quantity', async function (req, res) {
@@ -245,20 +240,6 @@ app.post('/scoreUser', async function (req, res) {
     catch (error) {
         res.status(422).json(error)
     }
-})
-
-app.delete('/movies', async function (req, res) {
-    try{
-       await Movie.destroy({
-            where: {
-                name: req.body.name
-            }
-        })
-        res.status(201).json({})
-    }
-   catch(error){
-    res.status(422).json({})
-   }
 })
 
 /*            AGREGAR MENSAJE A FORO            */
@@ -465,9 +446,13 @@ app.get('/users', async function(req, res) {
 })
 
 app.post('/users', async function (req, res) {
-    User.create({
-        nickname: req.body.name,
+    let user = await User.create({
+        nickname: req.body.nickname,
+        mail: 'sdds',
+        password: 'assa',
+        reports: 0
     })
+    res.status(201).json({idUser: user.id})
 })
 
 /*            DENUNCIAR USUARIO            */
@@ -504,3 +489,30 @@ app.delete('/listMovie', async function (req, res) {
     }
     })
 
+    app.delete('/movies', async function (req, res) {
+        try {
+            await Movie.destroy({
+                where: {
+                    id: req.body.id
+                  }
+            })
+            res.status(201).json({})
+        }
+        catch(error) {
+            res.status(422).json(error)
+        }
+        })
+
+        app.delete('/users', async function (req, res) {
+            try {
+                await User.destroy({
+                    where: {
+                        id: req.body.id
+                      }
+                })
+                res.status(201).json({})
+            }
+            catch(error) {
+                res.status(422).json(error)
+            }
+            })
