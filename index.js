@@ -155,7 +155,7 @@ app.get('/movies', async function (req, res) {
 
 app.post('/movies', async function (req, res) {
    try{
-        Movie.create({
+        await Movie.create({
             name: req.body.name,
             description: 'lorem ipsum',
             platform: 'netflix'
