@@ -7,12 +7,28 @@ const {assert} = chai;
 
 describe('UserDelete', () => {
 
+    let idUser
+
+    before('Create User', () => {
+        return axios({
+                method : 'post',
+                url: 'http://localhost:4444/users',
+                data: {nickname: 'Charlie'}
+                
+            }).then((response) => {
+                idUser = response.data.idUser
+                assert.equal(response.status, 201)
+            }, (err) => {
+                assert.equal(err.response.status, 201)
+            })
+    })
+
     it('Returns 201 if the User is deleted', (done) => {
 
         axios({
             method: 'delete',
             url: 'http://localhost:4444/user',
-            data: {idUser: 10}
+            data: {idUser: idUser}
             
         }
         
@@ -20,22 +36,10 @@ describe('UserDelete', () => {
             
             assert.equal(response.status, 201)
             done()
-        }, (err) => {
-            assert.equal(err.response.status, 422)
+        }).catch((err) => {
+            assert.equal(err.response.status, 201)
             done()
         })
     })
-
-/*    it('Returns 422 if UserForum exist', (done) => {
-        axios({
-            method : 'post',
-            url: 'http://localhost:4444/user',
-            data: {idUser: 10}
-        })
-        .catch(err => {
-            assert.equal(err.response.data.message, 'USER_DOESNT_EXIST')
-            done()
-        })
-    }) */
 
 })
