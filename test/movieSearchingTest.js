@@ -18,7 +18,6 @@ describe('Movie seaching by name', () => {
             method: 'get',
             url: 'http://localhost:4444/movies?name=spiderman',
         }).then(response => {
-            console.log(response.data)
             assert.equal(response.data[0].name, "Spiderman")
             done()
         })
