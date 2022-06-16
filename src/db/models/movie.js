@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Movie.belongsToMany(models.List, {through: 'listmovies'})
       Movie.hasMany(models.Score)
+      Movie.hasOne(models.Forum)
     }
   }
   Movie.init({
@@ -51,7 +52,8 @@ module.exports = (sequelize, DataTypes) => {
 
     score: {
       type: DataTypes.FLOAT,
-    }
+    },
+
   }, {
     sequelize,
     modelName: 'Movie',
