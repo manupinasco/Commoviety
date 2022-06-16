@@ -138,7 +138,6 @@ app.post('/movies', async function (req, res) {
 
 app.post('/forums', async function (req, res) {
     let forum = await Forum.create({
-
     })
     res.status(201).json({ idForum: forum.id })
 })
@@ -564,6 +563,31 @@ app.delete('/lists', async function (req, res) {
         })
         res.status(201).json({})
     }
+    catch (error) {
+        res.status(422).json(error)
+    }
+})
+
+/* ------------------------------------------------- */
+/* ----------------ADD FORUM TO MOVIE--------------- */
+/* ------------------------------------------------- */
+
+app.post('/moviesForums', async function (req, res) {
+
+    try {
+        let movie = await Movie.findByPk(req.body.idMovie)
+        let forum = await Forum.findByPk(req.body.idForum)
+
+        if (forum.getDataValue('movieId') != null) {
+            return res.status(422).json({ message: 'MOVIEFORUM_EXISTS' })
+        }
+
+        else {
+            await forum.setMovie(movie)
+            res.status(201).json({})
+        }
+    }
+
     catch (error) {
         res.status(422).json(error)
     }
