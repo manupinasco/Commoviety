@@ -28,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
 
     reports: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
     },
 
     userId: {
