@@ -28,14 +28,14 @@ app.post('/usersForums', async function (req, res) {
         let associationExists = await user.hasForum(forum)
 
 
-        if(associationExists) {
-            return res.status(422).json({message: 'USERFORUM_EXISTS'})
+        if (associationExists) {
+            return res.status(422).json({ message: 'USERFORUM_EXISTS' })
         }
 
         else {
-                await forum.addUser(user)
-                res.status(201).json({})
-                
+            await forum.addUser(user)
+            res.status(201).json({})
+
         }
 
 
@@ -113,12 +113,23 @@ app.get('/movies', async function (req, res) {
 /* ------------------------------------------------- */
 
 app.post('/movies', async function (req, res) {
-    let movie = await Movie.create({
-        name: req.body.name,
-        description: req.body.description,
-        platform: req.body.platform
-    })
-    res.status(201).json({idMovie: movie.id})
+    if (req.body.quantScores == undefined) {
+        let movie = await Movie.create({
+            name: req.body.name,
+            description: req.body.description,
+            platform: req.body.platform
+        })
+        res.status(201).json({ idMovie: movie.id })
+    }
+    else {
+        let movie = await Movie.create({
+            name: req.body.name,
+            description: req.body.description,
+            platform: req.body.platform,
+            quantScores: req.body.quantScores
+        })
+        res.status(201).json({ idMovie: movie.id })
+    }
 })
 
 /* ------------------------------------------------- */
@@ -129,7 +140,7 @@ app.post('/forums', async function (req, res) {
     let forum = await Forum.create({
 
     })
-    res.status(201).json({idForum: forum.id})
+    res.status(201).json({ idForum: forum.id })
 })
 
 /* ------------------------------------------------- */
@@ -137,13 +148,13 @@ app.post('/forums', async function (req, res) {
 /* ------------------------------------------------- */
 
 app.get('/moviesTopPopularity/:quantity', async function (req, res) {
-        let movies = await Movie.findAll({
-            limit: Number(req.params.quantity),
-            order: [
-                ['quantScores', 'DESC']
-            ]
-        })
-        res.send(movies)
+    let movies = await Movie.findAll({
+        limit: Number(req.params.quantity),
+        order: [
+            ['quantScores', 'DESC']
+        ]
+    })
+    res.send(movies)
 })
 
 /* ------------------------------------------------- */
@@ -258,7 +269,7 @@ app.post('/messages', async function (req, res) {
         text: "lorem ipsum",
         reports: 0
     })
-    res.status(201).json({idMessage: message.id})
+    res.status(201).json({ idMessage: message.id })
 })
 
 /* ------------------------------------------------- */
@@ -356,7 +367,7 @@ app.post('/lists', async function (req, res) {
                     await listInstance.save()
                     let user = await User.findByPk(req.body.idUser)
                     user.addList(listInstance)
-                    res.status(201).json({idList: listInstance.id})
+                    res.status(201).json({ idList: listInstance.id })
                 }
                 else {
                     return res.status(422).json({ message: 'NAME_ALREADY_IN_USE' })
@@ -389,8 +400,8 @@ app.post('/listMovie', async function (req, res) {
         let associationExists = await list.hasMovie(movie)
 
 
-        if(associationExists) {
-            return res.status(422).json({message: 'LISTMOVIE_ALREADY_EXISTS'})
+        if (associationExists) {
+            return res.status(422).json({ message: 'LISTMOVIE_ALREADY_EXISTS' })
         }
 
         else {
@@ -405,14 +416,14 @@ app.post('/listMovie', async function (req, res) {
     catch (error) {
         res.status(422).json(error)
     }
-    
-    })
+
+})
 
 /* ------------------------------------------------- */
 /* ------------SEARCH USER BY NICKNAME-------------- */
 /* ------------------------------------------------- */
 
-app.get('/users', async function(req, res) {
+app.get('/users', async function (req, res) {
     if (req.query.name != undefined) {
         if (req.query.name.length >= 3) {
             data = await User.findAll({
@@ -442,7 +453,7 @@ app.post('/users', async function (req, res) {
         password: '****',
         reports: 0
     })
-    res.status(201).json({idUser: user.id})
+    res.status(201).json({ idUser: user.id })
 })
 
 /* ------------------------------------------------- */
@@ -451,16 +462,16 @@ app.post('/users', async function (req, res) {
 app.put('/userReport', async function (req, res) {
     try {
         let user = await User.findByPk(req.body.idUser)
-        if(user != null){
-            if(user.getDataValue('reports') < 5){
+        if (user != null) {
+            if (user.getDataValue('reports') < 5) {
                 user.update({
                     reports: user.getDataValue('reports') + 1,
                 })
                 res.status(201).json({})
-            }else{
+            } else {
                 return res.status(422).json({ message: 'MANY_TIMES_REPORTED_USER' })
             }
-        }else{
+        } else {
             return res.status(422).json({ message: 'USER_DOESNT_EXIST' })
         }
     }
@@ -480,10 +491,10 @@ app.delete('/listMovie', async function (req, res) {
         await list.removeMovie(movie)
         res.status(201).json({})
     }
-    catch(error) {
+    catch (error) {
         res.status(422).json(error)
     }
-    })
+})
 
 
 /* ------------------------------------------------- */
@@ -499,7 +510,7 @@ app.delete('/movies', async function (req, res) {
         })
         res.status(201).json({})
     }
-    catch(error) {
+    catch (error) {
         res.status(422).json(error)
     }
 })
@@ -517,7 +528,7 @@ app.delete('/users', async function (req, res) {
         })
         res.status(201).json({})
     }
-    catch(error) {
+    catch (error) {
         res.status(422).json(error)
     }
 })
@@ -535,7 +546,7 @@ app.delete('/forums', async function (req, res) {
         })
         res.status(201).json({})
     }
-    catch(error) {
+    catch (error) {
         res.status(422).json(error)
     }
 })
@@ -553,7 +564,7 @@ app.delete('/lists', async function (req, res) {
         })
         res.status(201).json({})
     }
-    catch(error) {
+    catch (error) {
         res.status(422).json(error)
     }
 })
