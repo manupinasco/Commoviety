@@ -9,7 +9,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-     await queryInterface.removeColumn('MovieId');
-     
+    await queryInterface.removeColumn('scores', 'MovieId');
   }
 };

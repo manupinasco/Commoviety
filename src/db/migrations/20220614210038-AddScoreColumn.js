@@ -9,7 +9,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-     await queryInterface.removeColumn('score');
-     
+     await queryInterface.removeColumn('movies', 'score'); 
   }
 };
