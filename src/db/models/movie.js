@@ -47,10 +47,17 @@ module.exports = (sequelize, DataTypes) => {
 
     quantScores: {
       type: DataTypes.INTEGER,
+      defaultValue: 0
     },
 
-    score: {
+    totalScore: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+
+    averageScore: {
       type: DataTypes.FLOAT,
+      defaultValue: 0
     }
   }, {
     sequelize,
