@@ -82,6 +82,18 @@ app.get('/scores/:id', async function (req, res) {
 })
 
 /* ------------------------------------------------- */
+/* -----------------GET MOVIE BY ID----------------- */
+/* ------------------------------------------------- */
+
+app.get('/movie', async function (req, res) {
+
+    let data = await Movie.findByPk(req.query.id)
+
+
+    res.send(data)
+})
+
+/* ------------------------------------------------- */
 /* -------------SEARCH MOVIES BY NAME--------------- */
 /* ------------------------------------------------- */
 app.get('/movies', async function (req, res) {
@@ -96,7 +108,6 @@ app.get('/movies', async function (req, res) {
                     }
                 }
             })
-            console.log(data)
         } else {
             //Si el nombre enviado tiene menos de 3 caracteres, aunque alguna pelicula empieze por este, no se decolvera
             data = []
@@ -162,19 +173,31 @@ app.get('/moviesTopPopularity/:quantity', async function (req, res) {
 
 app.post('/scoreUser', async function (req, res) {
     try {
-        let scoreObject = await Score.findAll({
+        let scoreObject = await Score.findOne({
             where: {
                 MovieId: req.body.idMovie,
                 UserId: req.body.idUser
             }
         })
-        if (scoreObject.length > 0) {
+
+        
+
+        if (scoreObject != null) {
+            let movie = await Movie.findByPk(req.body.idMovie)
+            movie.totalScore -= scoreObject.value
+            movie.totalScore += req.body.value
+            movie.averageScore = movie.totalScore / movie.quantScores
+
+            await movie.save()
+            
+
             await Score.update({ value: req.body.value }, {
                 where: {
                     MovieId: req.body.idMovie,
                     UserId: req.body.idUser
                 }
             })
+            
             res.status(201).json({})
 
         }
@@ -189,6 +212,12 @@ app.post('/scoreUser', async function (req, res) {
             await scoreInstance.save()
 
             let movie = await Movie.findByPk(req.body.idMovie)
+
+            movie.quantScores ++
+            movie.totalScore += req.body.value
+            movie.averageScore = movie.totalScore / movie.quantScores
+
+            await movie.save()
 
 
             scoreInstance.setUser(user)
@@ -205,8 +234,6 @@ app.post('/scoreUser', async function (req, res) {
             })
 
             if (list != null) {
-                let myList = await List.findByPk(list.id)
-                console.log(list.id)
                 list.addMovie(movie)
             }
             else {
@@ -238,7 +265,6 @@ app.post('/messagesForums', async function (req, res) {
         let forum = await Forum.findByPk(req.body.idForum)
         let messageUser = await User.findByPk(message.getDataValue('userId'))
         let userForumAssoExist = await messageUser.hasForum(forum)
-        console.log(userForumAssoExist)
         // Si el usuario del mensaje no esta asociado al foro, no se podra agregar el mensaje
         if (userForumAssoExist) {
             // Si el usuario del mensaje tiene 5 denuncias, no se podra agregar el mensaje
@@ -253,7 +279,6 @@ app.post('/messagesForums', async function (req, res) {
         }
     }
     catch (error) {
-        console.log(error)
         res.status(422).json(error)
     }
 })
@@ -266,7 +291,6 @@ app.post('/messages', async function (req, res) {
     let message = await Message.create({
         userId: req.body.idUser,
         text: "lorem ipsum",
-        reports: 0
     })
     res.status(201).json({ idMessage: message.id })
 })
@@ -285,7 +309,6 @@ app.put('/banUser', async function (req, res) {
         res.status(201).json({})
     }
     catch (error) {
-        console.log(error)
         res.status(422).json(error)
     }
 })
@@ -297,7 +320,6 @@ app.delete('/message', async function (req, res) {
     try {
         let message = await Message.findByPk(req.body.idMessage)
         let messageUser = await User.findByPk(message.getDataValue('userId'))
-        console.log(message.getDataValue('reports'))
         if (message.getDataValue('reports') >= 3) {
             if (messageUser.getDataValue('reports') >= 5) {
                 await Message.destroy({
@@ -314,7 +336,6 @@ app.delete('/message', async function (req, res) {
         }
     }
     catch (error) {
-        console.log(error)
         res.status(422).json(error)
     }
 })
@@ -339,7 +360,6 @@ app.put('/messageReport', async function (req, res) {
         }
     }
     catch (error) {
-        console.log(error)
         res.status(422).json(error)
     }
 })
@@ -450,7 +470,6 @@ app.post('/users', async function (req, res) {
         nickname: req.body.nickname,
         mail: 'sm@example.com',
         password: '****',
-        reports: 0
     })
     res.status(201).json({ idUser: user.id })
 })
@@ -475,7 +494,6 @@ app.put('/userReport', async function (req, res) {
         }
     }
     catch (error) {
-        console.log(error)
         res.status(422).json(error)
     }
 })
