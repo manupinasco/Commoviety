@@ -2,7 +2,7 @@
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-     await queryInterface.addColumn('movies', 'quantScores', { 
+     await queryInterface.addColumn('movies', 'totalScore', { 
        type: Sequelize.DataTypes.INTEGER,
        defaultValue: 0
       });
@@ -10,6 +10,7 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-     await queryInterface.removeColumn('movies', 'quantScores');   
+     await queryInterface.removeColumn('movies', 'totalScore'); 
   }
 };
+

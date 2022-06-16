@@ -23,7 +23,7 @@ describe('ScoreCreation', () => {
             }).then((response) => {
                 idMovie = response.data.idMovie
                 assert.equal(response.status, 201)
-            }, (err) => {
+            }).catch((err) => {
                 assert.equal(err.response.status, 201)
             })
         }
@@ -36,7 +36,7 @@ describe('ScoreCreation', () => {
             }).then((response) => {
                 idUser = response.data.idUser
                 assert.equal(response.status, 201)
-            }, (err) => {
+            }).catch((err) => {
                 assert.equal(err.response.status, 201)
             })
         }
@@ -49,7 +49,7 @@ describe('ScoreCreation', () => {
             }).then((response) => {
                 idMovie2 = response.data.idMovie
                 assert.equal(response.status, 201)
-            }, (err) => {
+            }).catch((err) => {
                 assert.equal(err.response.status, 201)
             })
         }
@@ -62,7 +62,7 @@ describe('ScoreCreation', () => {
             }).then((response) => {
                 idUser2 = response.data.idUser
                 assert.equal(response.status, 201)
-            }, (err) => {
+            }).catch((err) => {
                 assert.equal(err.response.status, 201)
             })
         }
@@ -81,11 +81,33 @@ describe('ScoreCreation', () => {
             
             assert.equal(response.status, 201)
             done()
-        }, (err) => {
+        }).catch((err) => {
             assert.equal(err.response.status, 201)
             done()
         })
     })
+
+    it("Tests if the number of scores of the movie has increased by one", (done) => {
+        axios({
+            method: 'get',
+            url: `http://localhost:4444/movie?id=${idMovie}`
+        }).then(response => {
+            assert.equal(response.data.quantScores, 1)
+            done()
+        })
+    })
+
+    it("Tests if the total score is the value of the score", (done) => {
+        axios({
+            method: 'get',
+            url: `http://localhost:4444/movie?id=${idMovie}`
+        }).then(response => {
+            assert.equal(response.data.totalScore, 5)
+            done()
+        })
+    })
+
+    
 
   it('Returns 201 if the value is updated', (done) => {
         axios({
@@ -97,8 +119,18 @@ describe('ScoreCreation', () => {
             
             assert.equal(response.status, 201)
             done()
-        }, (err) => {
+        }).catch((err) => {
             assert.equal(err.response.status, 201)
+            done()
+        })
+    })
+
+    it("Tests if the total score is now the value updated", (done) => {
+        axios({
+            method: 'get',
+            url: `http://localhost:4444/movie?id=${idMovie}`
+        }).then(response => {
+            assert.equal(response.data.totalScore, 2)
             done()
         })
     })
@@ -107,14 +139,45 @@ describe('ScoreCreation', () => {
         axios({
             method : 'post',
             url: 'http://localhost:4444/scoreUser',
-            data: {idUser: idUser2, idMovie: idMovie2, value: 2}
+            data: {idUser: idUser2, idMovie: idMovie, value: 2}
         })
         .then((response) => {
             
             assert.equal(response.status, 201)
             done()
-        }, (err) => {
+        }).catch((err) => {
             assert.equal(err.response.status, 201)
+            done()
+        })
+    })
+
+    it("Tests if the number of scores of the movie has increased by two", (done) => {
+        axios({
+            method: 'get',
+            url: `http://localhost:4444/movie?id=${idMovie}`
+        }).then(response => {
+            assert.equal(response.data.quantScores, 2)
+            done()
+        })
+    })
+
+    it("Tests if the total score is the sum of both scores", (done) => {
+        axios({
+            method: 'get',
+            url: `http://localhost:4444/movie?id=${idMovie}`
+        }).then(response => {
+            assert.equal(response.data.totalScore, 4)
+            done()
+        })
+    })
+
+    it("Tests if the average score is the average between those two scores", (done) => {
+        axios({
+            method: 'get',
+            url: `http://localhost:4444/movie?id=${idMovie}`
+        }).then(response => {
+            
+            assert.equal(response.data.averageScore, 2)
             done()
         })
     })
@@ -129,7 +192,7 @@ describe('ScoreCreation', () => {
             
             assert.equal(response.status, 201)
             done()
-        }, (err) => {
+        }).catch((err) => {
             assert.equal(err.response.status, 201)
             done()
         })
@@ -144,7 +207,7 @@ describe('ScoreCreation', () => {
                 
             }).then((response) => {
                 assert.equal(response.status, 201)
-            }, (err) => {
+            }).catch((err) => {
                 assert.equal(err.response.status, 201)
             })
             
@@ -159,8 +222,8 @@ describe('ScoreCreation', () => {
                 
             }).then((response) => {
                 assert.equal(response.status, 201)
-            }, (err) => {
-                assert.equal(err.response.status, 422)
+            }).catch((err) => {
+                assert.equal(err.response.status, 201)
             })
         }
         let deleteMovie2 = async () => {
@@ -172,8 +235,8 @@ describe('ScoreCreation', () => {
             }).then((response) => {
 
                 assert.equal(response.status, 201)
-            }, (err) => {
-                assert.equal(err.response.status, 422)
+            }).catch((err) => {
+                assert.equal(err.response.status, 201)
             })
         }
         let deleteUser2 = async () => {
@@ -185,7 +248,7 @@ describe('ScoreCreation', () => {
             }).then((response) => {
 
                 assert.equal(response.status, 201)
-            }, (err) => {
+            }).catch((err) => {
                 assert.equal(err.response.status, 201)
             })
         }
@@ -194,7 +257,6 @@ describe('ScoreCreation', () => {
 
         
     })
-
 
     
 
