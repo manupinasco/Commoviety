@@ -3,7 +3,8 @@
 module.exports = {
   async up (queryInterface, Sequelize) {
      await queryInterface.addColumn('movies', 'quantScores', { 
-       type: Sequelize.DataTypes.INTEGER
+       type: Sequelize.DataTypes.INTEGER,
+       defaultValue: 0
       });
      
   },
