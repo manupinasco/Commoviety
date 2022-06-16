@@ -18,7 +18,6 @@ describe('Top popularity', () => {
                 
             }).then((response) => {
                 idMovie1 = response.data.idMovie
-                console.log(idMovie1)
             })
             
         }
@@ -30,7 +29,6 @@ describe('Top popularity', () => {
                 
             }).then((response) => {
                 idMovie2 = response.data.idMovie
-                console.log(idMovie2)
             })
         }
         let createMovie3 = async () => {
@@ -41,7 +39,6 @@ describe('Top popularity', () => {
                 
             }).then((response) => {
                 idMovie3 = response.data.idMovie
-                console.log(idMovie3)
             })
         }
         return Promise.all([createMovie1, createMovie2, createMovie3].map(fn => fn()))
