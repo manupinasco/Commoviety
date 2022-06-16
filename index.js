@@ -610,3 +610,28 @@ app.post('/moviesForums', async function (req, res) {
         res.status(422).json(error)
     }
 })
+
+/* ------------------------------------------------- */
+/* -------------REMOVE FORUM FROM MOVIE------------- */
+/* ------------------------------------------------- */
+
+app.delete('/moviesForums', async function (req, res) {
+
+    try {
+        let forum = await Forum.findByPk(req.body.idForum)
+        console.log("Pasé por acá")
+
+        if (forum.getDataValue('movieId') == req.body.idMovie) { 
+            await forum.setMovie(null)
+            res.status(201).json({})
+        }
+
+        else {
+            return res.status(422).json({ message: 'MOVIEFORUM_DOESNT_EXIST' })    
+        }
+    }
+
+    catch (error) {
+        res.status(422).json(error)
+    }
+})
