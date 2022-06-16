@@ -267,7 +267,6 @@ app.post('/messages', async function (req, res) {
     let message = await Message.create({
         userId: req.body.idUser,
         text: "lorem ipsum",
-        reports: 0
     })
     res.status(201).json({ idMessage: message.id })
 })
@@ -451,7 +450,6 @@ app.post('/users', async function (req, res) {
         nickname: req.body.nickname,
         mail: 'sm@example.com',
         password: '****',
-        reports: 0
     })
     res.status(201).json({ idUser: user.id })
 })
