@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Forum.belongsToMany(models.User, {through: 'forumusers'})
       Forum.hasMany(models.Message)
+      Forum.belongsTo(models.Movie)
     }
   }
   Forum.init({
@@ -33,6 +34,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
 
       defaultValue: DataTypes.NOW
+    },
+
+    movieId: {
+      type: DataTypes.INTEGER,
     }
   }, {
     sequelize,
