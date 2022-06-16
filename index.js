@@ -124,11 +124,21 @@ app.get('/movies', async function (req, res) {
 /* ------------------------------------------------- */
 
 app.post('/movies', async function (req, res) {
-    if (req.body.quantScores == undefined) {
+    if (req.body.quantScores != undefined) {
         let movie = await Movie.create({
             name: req.body.name,
             description: req.body.description,
-            platform: req.body.platform
+            platform: req.body.platform,
+            quantScores: req.body.quantScores
+        })
+        res.status(201).json({ idMovie: movie.id })
+    }
+    else if(req.body.averageScore != undefined) {
+        let movie = await Movie.create({
+            name: req.body.name,
+            description: req.body.description,
+            platform: req.body.platform,
+            averageScore: req.body.averageScore
         })
         res.status(201).json({ idMovie: movie.id })
     }
@@ -136,8 +146,7 @@ app.post('/movies', async function (req, res) {
         let movie = await Movie.create({
             name: req.body.name,
             description: req.body.description,
-            platform: req.body.platform,
-            quantScores: req.body.quantScores
+            platform: req.body.platform
         })
         res.status(201).json({ idMovie: movie.id })
     }
@@ -634,4 +643,18 @@ app.delete('/moviesForums', async function (req, res) {
     catch (error) {
         res.status(422).json(error)
     }
+})
+
+/* ------------------------------------------------- */
+/* --------GET TOP AVERAGE SCORE MOVIES------------- */
+/* ------------------------------------------------- */
+
+app.get('/moviesTopAvgScore/:quantity', async function (req, res) {
+    let movies = await Movie.findAll({
+        limit: Number(req.params.quantity),
+        order: [
+            ['averageScore', 'DESC']
+        ]
+    })
+    res.send(movies)
 })
