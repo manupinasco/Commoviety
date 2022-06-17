@@ -273,7 +273,6 @@ app.post('/messagesForums', async function (req, res) {
         let forum = await Forum.findByPk(req.body.idForum)
         let user = await User.findByPk(req.body.idUser)
         let userForumAssoExist = await user.hasForum(forum)
-        console.log(userForumAssoExist)
         // Si el usuario del mensaje no esta asociado al foro, no se podra agregar el mensaje
         if (userForumAssoExist) {
             // Si el usuario del mensaje tiene 5 denuncias, no se podra agregar el mensaje
@@ -620,8 +619,6 @@ app.delete('/moviesForums', async function (req, res) {
 
     try {
         let forum = await Forum.findByPk(req.body.idForum)
-        console.log("Pasé por acá")
-
         if (forum.getDataValue('movieId') == req.body.idMovie) { 
             await forum.setMovie(null)
             res.status(201).json({})
