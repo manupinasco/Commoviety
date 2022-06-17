@@ -270,38 +270,30 @@ app.post('/scoreUser', async function (req, res) {
 
 app.post('/messagesForums', async function (req, res) {
     try {
-        let message = await Message.findByPk(req.body.idMessage)
         let forum = await Forum.findByPk(req.body.idForum)
-        let messageUser = await User.findByPk(message.getDataValue('userId'))
-        let userForumAssoExist = await messageUser.hasForum(forum)
+        let user = await User.findByPk(req.body.idUser)
+        let userForumAssoExist = await user.hasForum(forum)
+        console.log(userForumAssoExist)
         // Si el usuario del mensaje no esta asociado al foro, no se podra agregar el mensaje
         if (userForumAssoExist) {
             // Si el usuario del mensaje tiene 5 denuncias, no se podra agregar el mensaje
-            if (messageUser.getDataValue('reports') == 5) {
+            if (user.getDataValue('reports') == 5) {
                 return res.status(422).json({ message: 'BANNED_USER' })
             } else {
+                let message = await Message.create({
+                    userId: req.body.idUser,
+                    text: "lorem ipsum",
+                })
                 forum.addMessage(message)
                 res.status(201).json({})
             }
         } else {
-            return res.status(422).json({ message: 'USERFORUM_NO_EXISTS' })
+            return res.status(422).json({ message: 'USERFORUM_DOESNT_EXISTS' })
         }
     }
     catch (error) {
         res.status(422).json(error)
     }
-})
-
-/* ------------------------------------------------- */
-/* ------------------CREATE MESSAGE----------------- */
-/* ------------------------------------------------- */
-
-app.post('/messages', async function (req, res) {
-    let message = await Message.create({
-        userId: req.body.idUser,
-        text: "lorem ipsum",
-    })
-    res.status(201).json({ idMessage: message.id })
 })
 
 /* ------------------------------------------------- */
