@@ -285,7 +285,7 @@ app.post('/messagesForums', async function (req, res) {
                     text: "lorem ipsum",
                 })
                 forum.addMessage(message)
-                res.status(201).json({})
+                res.status(201).json({idMessage: message.id})
             }
         } else {
             return res.status(422).json({ message: 'USERFORUM_DOESNT_EXISTS' })
