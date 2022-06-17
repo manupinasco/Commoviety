@@ -11,22 +11,45 @@ describe('Message reporting', () => {
     let idMessage
 
     before(async () => {
-        return axios({
-            method: 'post',
-            url: 'http://localhost:4444/users',
-            data: { nickname: 'Clark' }
-        })
-        .then((response) => {
-            idUser = response.data.idUser
+        let createForum = async function () {
             return axios({
                 method: 'post',
-                url: 'http://localhost:4444/messages',
-                data: {idUser: idUser}
+                url: 'http://localhost:4444/forums',
             })
             .then((response) => {
+                    idForum = response.data.idForum
+            })
+        }
+
+        let createUser = async function () {
+            return axios({
+                method: 'post',
+                url: 'http://localhost:4444/users',
+                data: { nickname: 'Clark' }
+            })
+            .then((response) => {
+                    idUser = response.data.idUser
+            })
+        }
+
+        let associateUserForum = async function () { 
+            return axios({
+            method: 'post',
+            url: 'http://localhost:4444/usersForums',
+            data: { idUser: idUser, idForum: idForum }
+        })}
+
+        let sendMessage = async function () {
+            return axios({
+                method: 'post',
+                url: 'http://localhost:4444/messagesForums',
+                data: { idForum: idForum, idUser: idUser }
+            }).then((response) => {
                 idMessage = response.data.idMessage
             })
-        })
+        } 
+
+        return Promise.all([createForum, createUser].map(fn => fn())).then(associateUserForum).then(sendMessage)
     })
 
     it('Returns 201 if the message is reported correctly', () => {
